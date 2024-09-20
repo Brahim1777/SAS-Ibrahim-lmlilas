@@ -150,12 +150,12 @@ int main() {
     srand(time(NULL)); // Graine pour la génération d'identifiants de réclamation aléatoires
 
     do {
-        printf("---------------------------------------------------------\n");
+      
         printf("|                   1. INSCRIPTION                     |\n");
         printf("|                   2. CONNEXION                       |\n");
         printf("|                   0. QUITTER LE PROGRAMME            |\n");
         printf("|          Veuillez entrer votre choix ici :           |\n");
-        printf("---------------------------------------------------------\n");
+       
         scanf("%d", &choice);
         getchar(); // Effacer le tampon d'entrée
 
@@ -206,10 +206,10 @@ int main() {
                             // Afficher le menu utilisateur après une connexion réussie
                             int userChoice;
                             do {
-                                printf("-----------------MENU UTILISATEUR--------------------\n");
+                              
                                 printf("|                1. AJOUTER UNE RÉCLAMATION         |\n");
                                 printf("|                   0. SE DÉCONNECTER                |\n");
-                                printf("----------------------------------------------\n");
+                              
                                 scanf("%d", &userChoice);
                                 getchar(); // Effacer le tampon d'entrée
 
@@ -251,12 +251,11 @@ int main() {
         while (isadminlogedin) {
             int adminchoice;
 
-            printf("-----------------MENU ADMINISTRATEUR--------------------\n");
             printf("|                1. VOIR TOUS LES UTILISATEURS        |\n");
             printf("|               2. SUPPRIMER UN COMPTE               |\n");
             printf("|             3. GÉRER LES RÉCLAMATIONS                |\n");
             printf("|                  0. SE DÉCONNECTER                 |\n");
-            printf("----------------------------------------------\n");
+           
             scanf("%d", &adminchoice);
             getchar(); // Effacer le tampon d'entrée
 
@@ -290,5 +289,3 @@ int main() {
 
     return 0;
 }
-
-
