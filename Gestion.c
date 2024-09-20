@@ -47,7 +47,11 @@ int generateReclamationID() {
 }
 
 // Fonction pour obtenir la date actuelle
-void getCurrentDate
+void getCurrentDate(char *buffer) {
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    sprintf(buffer, "%02d-%02d-%04d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
+}
 
 // Fonction pour ajouter une réclamation
 void addReclamation(char username[]) {
@@ -146,12 +150,13 @@ int main() {
     srand(time(NULL)); // Graine pour la génération d'identifiants de réclamation aléatoires
 
     do {
-       
+        printf("---------------------------------------------------------\n");
         printf("|                   1. INSCRIPTION                     |\n");
         printf("|                   2. CONNEXION                       |\n");
-        printf("|                   3. QUITTER LE PROGRAMME            |\n");
+        printf("|                   0. QUITTER LE PROGRAMME            |\n");
         printf("|          Veuillez entrer votre choix ici :           |\n");
-       
+        printf("---------------------------------------------------------\n");
+        scanf("%d", &choice);
         getchar(); // Effacer le tampon d'entrée
 
         switch (choice) {
@@ -203,8 +208,8 @@ int main() {
                             do {
                                 printf("-----------------MENU UTILISATEUR--------------------\n");
                                 printf("|                1. AJOUTER UNE RÉCLAMATION         |\n");
-                                printf("|                   2. SE DÉCONNECTER                |\n");
-                                
+                                printf("|                   0. SE DÉCONNECTER                |\n");
+                                printf("----------------------------------------------\n");
                                 scanf("%d", &userChoice);
                                 getchar(); // Effacer le tampon d'entrée
 
@@ -213,7 +218,7 @@ int main() {
                                         addReclamation(conixion1.SIGN_IN.username1);
                                         break;
 
-                                    case 2:
+                                    case 0 :
                                         printf("Utilisateur déconnecté.\n");
                                         break;
 
@@ -233,7 +238,7 @@ int main() {
                 break;
             }
 
-            case 3:
+            case 0:
                 printf("Sortie du programme.\n");
                 break;
 
@@ -246,12 +251,12 @@ int main() {
         while (isadminlogedin) {
             int adminchoice;
 
-           
+            printf("-----------------MENU ADMINISTRATEUR--------------------\n");
             printf("|                1. VOIR TOUS LES UTILISATEURS        |\n");
             printf("|               2. SUPPRIMER UN COMPTE               |\n");
             printf("|             3. GÉRER LES RÉCLAMATIONS                |\n");
-            printf("|                  4. SE DÉCONNECTER                 |\n");
-
+            printf("|                  0. SE DÉCONNECTER                 |\n");
+            printf("----------------------------------------------\n");
             scanf("%d", &adminchoice);
             getchar(); // Effacer le tampon d'entrée
 
@@ -271,8 +276,9 @@ int main() {
                     manageReclamations();
                     break;
 
-                case 4:
-
+                case 0:
+                    printf("Administrateur déconnecté.\n");
+                    isadminlogedin = 0;
                     break;
 
                 default:
@@ -284,4 +290,5 @@ int main() {
 
     return 0;
 }
+
 
