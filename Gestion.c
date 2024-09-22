@@ -1,291 +1,291 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+#include <stdlib.h>
+#include <stdbool.h>
 #include <time.h>
-#include <windows.h>
 
-#define MAX_ACCOUNTS 100
-#define MAX_RECLAMATIONS 100
+#define MAX_USERS 100
 
-// Structure pour gérer les informations utilisateur
-struct conixion {
-    struct singUp {
-        char username[100];
-        char password[100];
-        char email[100];
-    } SIGN_UP[MAX_ACCOUNTS];
+//=====for acccunts====================
+int totalaccounts =0;                //
+int isAdmin=0;                       //
+int reclamation_count = 0;           //
+//=====================================
 
-    struct signIn {
-        char username1[100];
-        char password1[100];
-    } SIGN_IN;
-};
+//======admin pasword/name=============
+char admin_username[] = "BRAHIM";    //
+char admin_password[] = "BRAhim-123";//
+//=====================================
 
-// Structure pour gérer les réclamations
-struct reclamation {
-    int reclamationID;
-    char username[100];
-    char motif[100];
-    char description[200];
-    char category[100];
-    char status[20];
-    char date[20];
-};
+//=======  Informations new client=========
+struct client {                          //
+    char nomUtilisateur[50];             //
+    char motDePasse[50];                 //
+    char tele[10];                       //
+};                                       //
+struct client clients_data[MAX_USERS];   //
+//=========================================
 
-// Identifiants de l'administrateur
-char adminusername[] = "BRAHIM";
-char adminpassword[] = "BRAhim_123";
+//===== Informations add reclamation==
+struct reclamation {                //
+    int id;                         //
+    char usernam[20];               //
+    char motif[50];                 //
+    char description[200];          //
+    char categorie[20];             //
+    char status[50];                //
+     char date[20];                 //
+};                                  //
+struct reclamation reclamation_data[MAX_USERS];
+//====================================
 
-// Tableau des réclamations
-struct reclamation reclamations[MAX_RECLAMATIONS];
-int totalReclamations = 0;
+//================== Fonction pour vérifier les contraintes du mot de passe==========================================================
+bool verifierMotDePasse(char motDePasse[], char nomUtilisateur[]) {                                                                //
+     // *******Vérifie la longueur minimale du mot de passe****************|                                                       //
+    if (strlen(motDePasse) < 7) {
+        return false;}                                                                                                              //
+      //**************************
+    bool majuscule = false, minuscule = false, chiffre = false, special = false;                                                    //
+    for (int i = 0; motDePasse[i] != '\0'; i++) {
+        if (motDePasse[i] >= 'A' && motDePasse[i] <= 'Z') {                                                                         //
+            majuscule = true;}
+             else if (motDePasse[i] >= 'a' && motDePasse[i] <= 'z') {                                                               //
+            minuscule = true;}
+             else if (motDePasse[i] >= '0' && motDePasse[i] <= '9') {                                                               //
+            chiffre = true;}
+             else if (strchr("!@#$%^&*", motDePasse[i])) {                                                                          //
+            special = true;}
+        }                                                                                                                           //
+//*** Vérifie si le mot de passe contient au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial
+     if (!majuscule || !minuscule || !chiffre || !special) {                                                                        //
+        return false;}
+      // *****Vérifie si le mot de passe contient le nom d'utilisateur**|                                                           //
+    if (strstr(motDePasse, nomUtilisateur) != NULL) {
+        return false;}
+                                                                                                                                    //
+    return true;
+}                                                                                                                                   //
+//====================================================================================================================================
 
-// Fonction pour générer un identifiant de réclamation aléatoire
-int generateReclamationID() {
-    return rand() % 10000; // Génère un nombre aléatoire entre 0 et 9999
-}
-
-// Fonction pour obtenir la date actuelle
-void getCurrentDate(char *buffer) {
-    time_t t = time(NULL);
-    struct tm tm = *localtime(&t);
-    sprintf(buffer, "%02d-%02d-%04d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
-}
-
-// Fonction pour ajouter une réclamation
-void addReclamation(char username[]) {
-    if (totalReclamations < MAX_RECLAMATIONS) {
-        struct reclamation newReclamation;
-        newReclamation.reclamationID = generateReclamationID();
-        strcpy(newReclamation.username, username);
-
-        printf("Entrez le motif de la réclamation (par exemple, produit défectueux, facturation) : ");
-        fgets(newReclamation.motif, sizeof(newReclamation.motif), stdin);
-        newReclamation.motif[strcspn(newReclamation.motif, "\n")] = '\0';
-
-        printf("Entrez une description détaillée du problème : ");
-        fgets(newReclamation.description, sizeof(newReclamation.description), stdin);
-        newReclamation.description[strcspn(newReclamation.description, "\n")] = '\0';
-
-        printf("Entrez la catégorie de la réclamation (par exemple, produit, service) : ");
-        fgets(newReclamation.category, sizeof(newReclamation.category), stdin);
-        newReclamation.category[strcspn(newReclamation.category, "\n")] = '\0';
-
-        strcpy(newReclamation.status, "En cours"); // Statut par défaut est "en cours"
-
-        getCurrentDate(newReclamation.date); // Obtenir la date actuelle
-
-        // Stocker la nouvelle réclamation dans le tableau des réclamations
-        reclamations[totalReclamations++] = newReclamation;
-
-        printf("\nRéclamation ajoutée avec succès !\n");
-        printf("Identifiant de réclamation : %d\n", newReclamation.reclamationID);
-        printf("Motif : %s\n", newReclamation.motif);
-        printf("Description : %s\n", newReclamation.description);
-        printf("Catégorie : %s\n", newReclamation.category);
-        printf("Statut : %s\n", newReclamation.status);
-        printf("Date : %s\n\n", newReclamation.date);
+//=========================== Fonction create account ============================
+void create_account() {                                                          //
+    struct client new_client;
+                                                                                 //
+    printf("Entrez vos informations:\n");
+    printf("Telephone: ");                                                       //
+    scanf(" %[^\n]", new_client.tele);
+    printf("Entrez votre nom d'utilisateur : ");                                 //
+    scanf(" %[^\n]", new_client.nomUtilisateur);
+    printf("Entrez votre mot de passe : ");                                      //
+    scanf(" %[^\n]", new_client.motDePasse);
+        //  verifierMotDePasse Fonction pour vérifier  mot de passe              //
+    if (verifierMotDePasse(new_client.motDePasse, new_client.nomUtilisateur)) {
+        clients_data[totalaccounts] = new_client;                                //
+        totalaccounts++;
+        printf("Inscription reussie.\n");                                        //
     } else {
-        printf("Limite de réclamations atteinte !\n");
+        printf("Erreur : Le mot de passe ne respecte pas les contraintes.\n");   //
     }
-}
+}                                                                                //
+//=================================================================================
 
-// Fonction pour gérer les réclamations (implémentation fictive pour l'instant)
-void manageReclamations() {
-    printf("Liste de toutes les réclamations :\n");
-    for (int i = 0; i < totalReclamations; i++) {
-        printf("Identifiant de réclamation : %d\n", reclamations[i].reclamationID);
-        printf("De : %s\n", reclamations[i].username);
-        printf("Motif : %s\n", reclamations[i].motif);
-        printf("Description : %s\n", reclamations[i].description);
-        printf("Catégorie : %s\n", reclamations[i].category);
-        printf("Statut : %s\n", reclamations[i].status);
-        printf("Date : %s\n", reclamations[i].date);
-        printf("----------------------------------------\n");
+//================================================= Fonction Se connecter ================================================
+void Se_connecter() {
+    char name[100], password[100];                                                                                      //
+    isAdmin = 0;
+                                                                                                                        //
+    printf("Entrez votre nom d'utilisateur : ");
+    scanf(" %[^\n]", name);                                                                                             //
+    printf("Entrez votre mot de passe : ");
+    scanf(" %[^\n]", password);
+                                                                                                                        //
+    if (strcmp(name, admin_username) == 0 && strcmp(password, admin_password) == 0) {
+        printf("Connexion reussie en tant qu'administrateur.\n");
+        isAdmin = 1;                                                                                                    //
+        menu_admin();//Fonction Menu admin
+        return;
     }
-}
-
-// Fonction pour supprimer un compte utilisateur
-void deleteAccount(struct conixion *conixion1, int *totalaccounts) {
-    char username[100];
-    printf("Entrez le nom d'utilisateur du compte à supprimer : ");
-    fgets(username, sizeof(username), stdin);
-    username[strcspn(username, "\n")] = '\0'; // Retirer le saut de ligne
-
-    for (int i = 0; i < *totalaccounts; i++) {
-        if (strcmp(conixion1->SIGN_UP[i].username, username) == 0) {
-            for (int j = i; j < *totalaccounts - 1; j++) {
-                conixion1->SIGN_UP[j] = conixion1->SIGN_UP[j + 1];
-            }
-            (*totalaccounts)--;
-            printf("Compte supprimé avec succès !\n");
+                                                                                                                        //
+    for (int i = 0; i < totalaccounts; i++) {
+        if (strcmp(clients_data[i].nomUtilisateur, name) == 0 && strcmp(clients_data[i].motDePasse, password) == 0) {   //
+            printf("%s, vous êtes connecté\n", clients_data[i].nomUtilisateur);
+            Menu_dutilisateur();// Fonction Menu utilisateur                                                                                       //
             return;
         }
+    }                                                                                                                   //
+    printf("Erreur : nom d'utilisateur ou mot de passe incorrect.\n");
+}                                                                                                                       //
+//========================================================================================================================
+
+//=================Fonction Menu utilisateur =======================================
+void Menu_dutilisateur() {                                                       //
+    int choice;
+    do {                                                                         //
+        printf("               Menu d'utilisateur                     \n");
+        printf("                  ~~Menu~~                            \n");      //
+        printf("            1. Ajouter une reclamation                \n");
+        printf("                 0. Quitter                           \n");      //
+        printf("Veuillez entrer votre choix ici ==> ");
+        scanf("%d", &choice);                                                    //
+
+        if (choice == 1) {                                                       //
+          add_reclamation();//Fonction Ajouter une reclamation
+        } else if (choice != 0) {                                                //
+            printf("Choix invalide, reessayez.\n");
+        }                                                                        //
+    } while (choice != 0);
+}                                                                                //
+//=================================================================================
+
+//=======================Fonction pour obtenir la date actuelle   ===================================
+                                                                                                   //
+void afficher_date_actuelle(char date[]) {                                                         //
+    time_t t = time(NULL);                                                                         //
+    struct tm dateStruct;                                                                          //
+    localtime_s(&dateStruct, &t);                                                                  //
+    sprintf(date, "%04d-%02d-%02d", dateStruct.tm_year + 1900, dateStruct.tm_mon + 1, dateStruct.tm_mday);
+}                                                                                                  //
+//===================================================================================================
+
+
+//=================Fonction Ajouter une reclamation ===============================
+void add_reclamation() {
+    if (reclamation_count >= MAX_USERS) {                                        //
+        printf("Erreur : Limite maximale de réclamations atteinte.\n");
+        return;                                                                  //
     }
-    printf("Compte non trouvé !\n");
+                                                                                 //
+    struct reclamation new_reclamation;
+    new_reclamation.id = rand() % 1000;                                          //
+    strcpy(new_reclamation.status, "en cours");
+afficher_date_actuelle(new_reclamation.date);// Fonction pour obtenir la date actuelle
+    printf("Nom d'utilisateur: ");
+    scanf(" %[^\n]", new_reclamation.usernam);                                   //
+    printf("Entrez le motif de la reclamation : ");
+    scanf(" %[^\n]", new_reclamation.motif);
+    printf("Entrez une description detaillee du probleme: ");                    //
+    scanf(" %[^\n]", new_reclamation.description);
+    printf("Entrez la categorie de la reclamation: ");                           //
+    scanf(" %[^\n]", new_reclamation.categorie);
+                                                                                 //
+    reclamation_data[reclamation_count++] = new_reclamation;
+
+    printf("======================================\n");                          //
+    printf("\nReclamation ajoutee avec succes    \n");
+    printf("ID de reclamation : %d               \n", new_reclamation.id);
+    printf("       Motif      : %s               \n", new_reclamation.motif);   //
+    printf("    Description   : %s               \n", new_reclamation.description);
+    printf("     Categorie    : %s               \n", new_reclamation.categorie);
+    printf("      Statut      : %s               \n", new_reclamation.status);  //
+    printf("       Date       : %s\n             \n", new_reclamation.date);
+    printf("======================================\n");
+                                                                                 //
+}
+//=================================================================================
+
+//=========================== Fonction pour supprimer un compte utilisateur========
+void supprimer_comte(struct client clients_data[], int totalaccounts) {
+    char nameuser[100];
+    printf("Entrez le nom d'utilisateur du compte à supprimer : ");
+    scanf(" %[^\n]", nameuser);
+
+    for (int i = 0; i < totalaccounts; i++) {
+        if (strcmp(clients_data[i].nomUtilisateur, nameuser) == 0) {
+            for (int j = i; j < totalaccounts - 1; j++) {
+                clients_data[j] = clients_data[j + 1];
+            }
+            totalaccounts--;
+            printf("Compte supprimé avec succès !\n");
+            return totalaccounts;
+        }
+    }
+    printf("Compte non trouve !\n");
+     return totalaccounts;
 }
 
-// Fonction pour vérifier si le mot de passe respecte la politique de base
-int isPasswordValid(char *password) {
-    int numberfound = 0, upercasefound = 0, specialcharfound = 0;
 
-    for (int i = 0; i < strlen(password); i++) {
-        if (isdigit(password[i])) numberfound = 1;
-        if (isupper(password[i])) upercasefound = 1;
-        if (strchr("!@#$%^&*()-_=+[]{}|;:'\",.<>?/`~", password[i])) specialcharfound = 1;
-    }
 
-    // Vérification simple de la politique de mot de passe
-    if (!upercasefound || !specialcharfound || !numberfound || strlen(password) < 8) {
-        return 0;
-    }
-    return 1;
-}
+//=================Fonction Menu admin ==============================================
+void menu_admin() {
+    int adminchoice;
+    while (isAdmin) {
+        printf("             1. Voir tous les utilisateurs            \n");
+        printf("             2. Supprimer un compte                \n");
+        printf("             3. Gérer les réclamations              \n");
+        printf("             0. Quitter                            \n");
+        printf("Veuillez entrer votre choix ici ==> ");
+        scanf("%d", &adminchoice);
 
-int main() {
-    struct conixion conixion1;
-    int choice, attempoflogin = 0, isadminlogedin = 0, totalaccounts = 0;
-
-    srand(time(NULL)); // Graine pour la génération d'identifiants de réclamation aléatoires
-
-    do {
-      
-        printf("|                   1. INSCRIPTION                     |\n");
-        printf("|                   2. CONNEXION                       |\n");
-        printf("|                   0. QUITTER LE PROGRAMME            |\n");
-        printf("|          Veuillez entrer votre choix ici :           |\n");
-       
-        scanf("%d", &choice);
-        getchar(); // Effacer le tampon d'entrée
-
-        switch (choice) {
-            case 1: { // Enregistrer un nouvel utilisateur
-                printf("Veuillez entrer votre nom d'utilisateur : \n");
-                fgets(conixion1.SIGN_UP[totalaccounts].username, sizeof(conixion1.SIGN_UP[totalaccounts].username), stdin);
-                conixion1.SIGN_UP[totalaccounts].username[strcspn(conixion1.SIGN_UP[totalaccounts].username, "\n")] = '\0';
-
-                printf("Veuillez entrer votre email : \n");
-                fgets(conixion1.SIGN_UP[totalaccounts].email, sizeof(conixion1.SIGN_UP[totalaccounts].email), stdin);
-                conixion1.SIGN_UP[totalaccounts].email[strcspn(conixion1.SIGN_UP[totalaccounts].email, "\n")] = '\0';
-
-                printf("Veuillez entrer votre mot de passe : \n");
-                fgets(conixion1.SIGN_UP[totalaccounts].password, sizeof(conixion1.SIGN_UP[totalaccounts].password), stdin);
-                conixion1.SIGN_UP[totalaccounts].password[strcspn(conixion1.SIGN_UP[totalaccounts].password, "\n")] = '\0';
-
-                // Valider le mot de passe selon une politique de base
-                if (!isPasswordValid(conixion1.SIGN_UP[totalaccounts].password)) {
-                    printf("Le mot de passe doit comporter au moins 8 caractères et contenir une lettre majuscule, un caractère spécial et un chiffre !\n");
-                } else {
-                    printf("Vous avez été inscrit avec succès !\n");
-                    totalaccounts++;
+        switch (adminchoice) {
+            case 1:
+                printf("Total des comptes : %d\n", totalaccounts);
+                for (int i = 0; i < totalaccounts; i++) {
+                    printf("Nom d'utilisateur : %s, Telephone : %s\n", clients_data[i].nomUtilisateur, clients_data[i].tele);
                 }
                 break;
-            }
 
-            case 2: { // Interface de connexion
-                printf("Veuillez entrer votre nom d'utilisateur : ");
-                fgets(conixion1.SIGN_IN.username1, sizeof(conixion1.SIGN_IN.username1), stdin);
-                conixion1.SIGN_IN.username1[strcspn(conixion1.SIGN_IN.username1, "\n")] = '\0';
-
-                printf("Veuillez entrer votre mot de passe : ");
-                fgets(conixion1.SIGN_IN.password1, sizeof(conixion1.SIGN_IN.password1), stdin);
-                conixion1.SIGN_IN.password1[strcspn(conixion1.SIGN_IN.password1, "\n")] = '\0';
-
-                if (strcmp(conixion1.SIGN_IN.username1, adminusername) == 0 && strcmp(conixion1.SIGN_IN.password1, adminpassword) == 0) {
-                    printf("Administrateur connecté avec succès !\n");
-                    isadminlogedin = 1;
-                } else {
-                    int loggedIn = 0;
-                    for (int i = 0; i < totalaccounts; i++) {
-                        if (strcmp(conixion1.SIGN_IN.username1, conixion1.SIGN_UP[i].username) == 0 &&
-                            strcmp(conixion1.SIGN_IN.password1, conixion1.SIGN_UP[i].password) == 0) {
-                            printf("Connexion réussie !\n");
-                            loggedIn = 1;
-
-                            // Afficher le menu utilisateur après une connexion réussie
-                            int userChoice;
-                            do {
-                              
-                                printf("|                1. AJOUTER UNE RÉCLAMATION         |\n");
-                                printf("|                   0. SE DÉCONNECTER                |\n");
-                              
-                                scanf("%d", &userChoice);
-                                getchar(); // Effacer le tampon d'entrée
-
-                                switch (userChoice) {
-                                    case 1:
-                                        addReclamation(conixion1.SIGN_IN.username1);
-                                        break;
-
-                                    case 0 :
-                                        printf("Utilisateur déconnecté.\n");
-                                        break;
-
-                                    default:
-                                        printf("Choix invalide. Réessayez.\n");
-                                }
-                            } while (userChoice != 2);
-
-                            break;
-                        }
-                    }
-                    if (!loggedIn) {
-                        printf("Nom d'utilisateur ou mot de passe invalide.\n");
-                    }
-                }
-
+            case 2:
+              supprimer_comte(clients_data, totalaccounts);
                 break;
-            }
+
+            case 3:
+                printf("Gestion des réclamations non implementee.\n");
+                break;
 
             case 0:
-                printf("Sortie du programme.\n");
+                printf("Administrateur déconnecté.\n");
+                isAdmin = 0;
                 break;
 
             default:
-                printf("Choix invalide !\n");
+                printf("Choix invalide. Réessayez.\n");
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+int main() {
+    int choix;
+    do {
+        printf("Bienvenue dans le systeme de gestion des reclamations.\n");
+        printf("                    ~~Menu~~                          \n");
+        printf("                1. Creer un compte                    \n");
+        printf("                 2. Se connecter                      \n");
+        printf("                  0. Quitter                          \n");
+        printf("Veuillez entrer votre choix ici ==> ");
+        scanf("%d", &choix);
+
+        switch (choix) {
+            case 1:
+                create_account();//Fonction create account
+                break;
+            case 2:
+
+                Se_connecter();// Fonction Se connecter
+                break;
+            case 0:
+                printf("Merci d'avoir utilisé le système. Au revoir!\n");
+                break;
+            default:
+                printf("Choix invalide, veuillez réessayer.\n");
                 break;
         }
-
-        // Actions administratives
-        while (isadminlogedin) {
-            int adminchoice;
-
-            printf("|                1. VOIR TOUS LES UTILISATEURS        |\n");
-            printf("|               2. SUPPRIMER UN COMPTE               |\n");
-            printf("|             3. GÉRER LES RÉCLAMATIONS                |\n");
-            printf("|                  0. SE DÉCONNECTER                 |\n");
-           
-            scanf("%d", &adminchoice);
-            getchar(); // Effacer le tampon d'entrée
-
-            switch (adminchoice) {
-                case 1:
-                    printf("Total des comptes : %d\n", totalaccounts);
-                    for (int i = 0; i < totalaccounts; i++) {
-                        printf("Nom d'utilisateur : %s, Email : %s\n", conixion1.SIGN_UP[i].username, conixion1.SIGN_UP[i].email);
-                    }
-                    break;
-
-                case 2:
-                    deleteAccount(&conixion1, &totalaccounts);
-                    break;
-
-                case 3:
-                    manageReclamations();
-                    break;
-
-                case 0:
-                    printf("Administrateur déconnecté.\n");
-                    isadminlogedin = 0;
-                    break;
-
-                default:
-                    printf("Choix invalide. Réessayez.\n");
-            }
-        }
-
-    } while (choice != 3);
+    } while (choix != 0);
 
     return 0;
 }
