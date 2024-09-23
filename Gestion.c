@@ -6,15 +6,15 @@
 
 #define MAX_USERS 100
 
+//======admin pasword/name=============
+char admin_username[] = "BRAHIM";    //
+char admin_password[] = "BRAhim-123";//
+//=====================================
+
 //=====for acccunts====================
 int totalaccounts =0;                //
 int isAdmin=0;                       //
 int reclamation_count = 0;           //
-//=====================================
-
-//======admin pasword/name=============
-char admin_username[] = "BRAHIM";    //
-char admin_password[] = "BRAhim-123";//
 //=====================================
 
 //=======  Informations new client=========
@@ -22,9 +22,9 @@ struct client {                          //
     char nomUtilisateur[50];             //
     char motDePasse[50];                 //
     char tele[10];                       //
-     bool isAgent;
+     bool isAgent;                       //
 };                                       //
-struct client clients_data[MAX_USERS];   //---------
+struct client clients_data[MAX_USERS];   //
 //=========================================
 
 //===== Informations add reclamation==
@@ -40,6 +40,16 @@ struct reclamation {                //
 struct reclamation reclamation_data[MAX_USERS];
 //====================================
 
+//=======================Fonction pour obtenir la date actuelle   ===================================
+                                                                                                   //
+void afficher_date_actuelle(char date[]) {                                                         //
+    time_t t = time(NULL);                                                                         //
+    struct tm dateStruct;                                                                          //
+    localtime_s(&dateStruct, &t);                                                                  //
+    sprintf(date, "%04d-%02d-%02d", dateStruct.tm_year + 1900, dateStruct.tm_mon + 1, dateStruct.tm_mday);
+}                                                                                                  //
+//===================================================================================================
+
 //================== Fonction pour vérifier les contraintes du mot de passe==========================================================
 bool verifierMotDePasse(char motDePasse[], char nomUtilisateur[]) {                                                                //
      // *Vérifie la longueur minimale du mot de passe**|                                                                           //
@@ -54,7 +64,7 @@ bool verifierMotDePasse(char motDePasse[], char nomUtilisateur[]) {             
             minuscule = true;}
              else if (motDePasse[i] >= '0' && motDePasse[i] <= '9') {                                                               //
             chiffre = true;}
-             else if (strchr("!@#$%^&*./\;,", motDePasse[i])) {                                                                     //
+             else if (strchr("!@#$%^&*)(_-+={[}?/><.,'~`]|\:;", motDePasse[i])) {                                                   //
             special = true;}
         }                                                                                                                           //
 //* Vérifie si le mot de passe contient au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial
@@ -72,7 +82,7 @@ bool verifierMotDePasse(char motDePasse[], char nomUtilisateur[]) {             
 void create_account() {                                                          //
     struct client new_client;
                                                                                  //
-    printf("Entrez vos informations:\n");
+    printf("    Entrez vos informations :)   \n");
     printf("Telephone: ");                                                       //
     scanf(" %[^\n]", new_client.tele);
     printf("Entrez votre nom d'utilisateur : ");                                 //
@@ -83,56 +93,56 @@ void create_account() {                                                         
     if (verifierMotDePasse(new_client.motDePasse, new_client.nomUtilisateur)) {
         clients_data[totalaccounts] = new_client;                                //
         totalaccounts++;
-        printf("Inscription reussie.\n");                                        //
+        printf("   ~Inscription reussie~     \n");                               //
     } else {
         printf("Erreur : Le mot de passe ne respecte pas les contraintes.\n");   //
     }
 }                                                                                //
 //=================================================================================
 
-//================================================= Fonction Se connecter ================================================
-void Se_connecter() {
-    char name[100], password[100];
+//================================================= Fonction Se connecter ============================================================
+void Se_connecter() {                                                                                                               //
+    char name[100], password[100];                                                                                                  //
     isAdmin = 0;
     int attempts = 0;
 
-    while (attempts < 3) {
-        printf("Entrez votre nom d'utilisateur : ");
+    while (attempts < 3) {                                                                                                          //
+        printf("Entrez votre nom d'utilisateur : ");                                                                                //
         scanf(" %[^\n]", name);
         printf("Entrez votre mot de passe : ");
-        scanf(" %[^\n]", password);
-
+        scanf(" %[^\n]", password);                                                                                                 //
+                                                                                                                                    //
         if (strcmp(name, admin_username) == 0 && strcmp(password, admin_password) == 0) {
             printf("Connexion reussie en tant qu'administrateur.\n");
-            isAdmin = 1;
-            menu_admin();
+            isAdmin = 1;                                                                                                            //
+            menu_admin();//Fonction Menu admin 333                                                                                  //
             return;
         }
-
-        for (int i = 0; i < totalaccounts; i++) {
+                                                                                                                                    //
+        for (int i = 0; i < totalaccounts; i++) {                                                                                   //
             if (strcmp(clients_data[i].nomUtilisateur, name) == 0 && strcmp(clients_data[i].motDePasse, password) == 0) {
-                printf("%s, vous êtes connecte\n", clients_data[i].nomUtilisateur);
-                if (clients_data[i].isAgent) {
-                    menu_agent();
+                printf("%s, vous etes connecte\n", clients_data[i].nomUtilisateur);
+                if (clients_data[i].isAgent) {                                                                                      //
+                    menu_agent();//Fonction Menu Reclamation agent 521                                                                 //
                 } else {
-                    Menu_dutilisateur();
-                }
-                return;
+                    Menu_dutilisateur();//Fonction Menu utilisateur 137
+                }                                                                                                                   //
+                return;                                                                                                             //
             }
         }
-
-        attempts++;
+                                                                                                                                    //
+        attempts++;                                                                                                                 //
         printf("Erreur : nom d'utilisateur ou mot de passe incorrect. Tentatives restantes : %d\n", 3 - attempts);
 
-        if (attempts == 3) {
-            printf("Trop de tentatives echouees. Veuillez patienter 1 minute avant de reessayer.\n");
+        if (attempts == 3) {                                                                                                        //
+            printf("Trop de tentatives echouees. Veuillez patienter 1 minute avant de reessayer.\n");                               //
             Sleep(60000);
             printf("Vous pouvez maintenant réessayer.\n");
-            attempts = 0;
-        }
+            attempts = 0;                                                                                                           //
+        }                                                                                                                           //
     }
-}                                                                                                                       //
-//========================================================================================================================
+}                                                                                                                                   //
+//====================================================================================================================================
 
 //=================Fonction Menu utilisateur =======================================
 void Menu_dutilisateur() {                                                       //
@@ -149,16 +159,16 @@ void Menu_dutilisateur() {                                                      
         scanf("%d", &choice);                                                    //
 
         if (choice == 1) {                                                       //
-          add_reclamation();//Fonction Ajouter une reclamation
-        } 
+          add_reclamation();//Fonction Ajouter une reclamation 180
+        }
         else if (choice==2){                                                     //
-        modifier_de_reclamation();//Fonction modifier de reclamation d'utilisateur
+        modifier_de_reclamation();//Fonction modifier my reclamation 216
         }
         else if (choice==3){
-        Supprimerlareclamationutilisateur();                                     //
+        Supprimerlareclamationutilisateur();//Fonction Supprimer la reclamation 274
         }
         else if (choice==4){                                                     //
-        my_reclamations();                                                       //
+        my_reclamations();//Fonction my reclamations 302                                                       //
         }
         else if (choice != 0) {                                                  //
             printf("Choix invalide, reessayez.\n");
@@ -166,142 +176,6 @@ void Menu_dutilisateur() {                                                      
     } while (choice != 0);
 }                                                                                //
 //=================================================================================
-
-//===============================Fonction Supprimer la reclamation ============================
-void Supprimerlareclamationutilisateur() {                                                   //
-    int ID;
-    bool found = false;                                                                      //
-    char username[50];
-
-    printf("Entrez votre nom d'utilisateur : ");
-    scanf(" %[^\n]", username);                                                              //
-
-    printf("Entrez l'ID de la reclamation a supprimer : ");                                  //
-    scanf("%d", &ID);
-
-    for (int i = 0; i < reclamation_count; i++) {                                            //
-        if (reclamation_data[i].id == ID && strcmp(reclamation_data[i].usernam, username) == 0) {
-            found = true;
-            for (int j = i; j < reclamation_count - 1; j++) {                                 //
-                reclamation_data[j] = reclamation_data[j + 1];
-            }                                                                                //
-            reclamation_count--;
-            printf("Reclamation avec ID %d supprimee avec succes.\n", ID);
-            break;                                                                           //
-        }
-    }
-
-    if (!found) {                                                                            //
-        printf("Erreur : ID %d non trouvee ou vous n'etes pas l'auteur de cette reclamation.\n", ID);
-    }
-}                                                                                            //
-//=============================================================================================
-
-//================Fonction my reclamations  ======================================
-void my_reclamations() {                                                        //
-    char username[50];
-    printf("Entrez votre nom d'utilisateur : ");                                //
-    scanf(" %[^\n]", username);
-                                                                                //
-    printf("Liste de vos reclamations :\n");
-    printf("==================================\n");                             //
-    bool hasReclamations = false;
-
-    for (int i = 0; i < reclamation_count; i++) {                               //
-        if (strcmp(reclamation_data[i].usernam, username) == 0) {
-            hasReclamations = true;
-            printf("======================================\n");
-            printf("Nom d'utilisateur: %s\n", reclamation_data[i].usernam);     //
-            printf("ID de reclamation : %d\n", reclamation_data[i].id);
-            printf("Motif : %s\n", reclamation_data[i].motif);
-            printf("Description : %s\n", reclamation_data[i].description);
-            printf("Categorie : %s\n", reclamation_data[i].categorie);          //
-            printf("Statut : %s\n", reclamation_data[i].status);
-            printf("Date : %s\n", reclamation_data[i].date);
-            printf("======================================\n");                 //
-        }
-    }                                                                           //
-
-    if (!hasReclamations) {
-        printf("Aucune reclamation trouvee pour l'utilisateur %s.\n", username);
-    }
-}                                                                               //
-//================================================================================
-
-
-
-
-
-//===========================Fonction modifier de reclamation d'utilisateur===========================================================================
-                                                                                                                                                    //
-void modifier_de_reclamation() {
-    int ID;                                                                                                                                         //
-    bool found = false;
-                                                                                                                                                    //
-    printf("Entrez l'ID de la reclamation a modifier : ");
-    if (scanf("%d", &ID) != 1) {
-        printf("Erreur : Entree invalide.\n");                                                                                                      //
-        return;
-    }
-
-    for (int i = 0; i < reclamation_count; i++) {
-        if (reclamation_data[i].id == ID) {                                                                                                         //
-            found = true;
-
-            char current_date[20];
-            afficher_date_actuelle(current_date);                                                                                                   //
-
-            struct tm date_submitted = {0};
-            if (sscanf(reclamation_data[i].date, "%d-%d-%d", &date_submitted.tm_year, &date_submitted.tm_mon, &date_submitted.tm_mday) != 3) {
-                printf("Erreur : Date de soumission invalide.\n");
-                return;                                                                                                                             //
-            }
-            date_submitted.tm_year -= 1900; 
-            date_submitted.tm_mon -= 1;      
-                                                                                                                                                    //
-            struct tm date_now = {0};
-            if (sscanf(current_date, "%d-%d-%d", &date_now.tm_year, &date_now.tm_mon, &date_now.tm_mday) != 3) {
-                printf("Erreur : Date actuelle invalide.\n");                                                                                       //
-                return;
-            }                                                                                                                                       //
-            date_now.tm_year -= 1900; 
-            date_now.tm_mon -= 1;      
-
-            double seconds = difftime(mktime(&date_now), mktime(&date_submitted));
-            double hours = seconds / 3600;                                                                                                          //
-
-            if (hours < 24) {
-                printf("Reclamation trouvee. Entrez les nouvelles informations:\n");                                                                //
-                printf("Entrez le nouveau motif de la reclamation : ");
-                scanf(" %[^\n]", reclamation_data[i].motif);
-                printf("Entrez une nouvelle description detaillee du probleme: ");                                                                  //
-                scanf(" %[^\n]", reclamation_data[i].description);
-                printf("Entrez la nouvelle categorie de la reclamation: ");
-                scanf(" %[^\n]", reclamation_data[i].categorie);
-                                                                                                                                                    //
-                printf("Reclamation modifiee avec succes.\n");
-            } else {
-                printf("Erreur : Vous ne pouvez pas modifier cette reclamation car plus de 24 heures se sont ecoulees.\n");
-            }                                                                                                                                       //
-            break;
-        }
-    }                                                                                                                                                //
-    if (!found) {
-        printf("Erreur : ID %d non trouve.\n", ID);
-    }                                                                                                                                               //
-}
-//=====================================================================================================================================================
-
-//=======================Fonction pour obtenir la date actuelle   ===================================
-                                                                                                   //
-void afficher_date_actuelle(char date[]) {                                                         //
-    time_t t = time(NULL);                                                                         //
-    struct tm dateStruct;                                                                          //
-    localtime_s(&dateStruct, &t);                                                                  //
-    sprintf(date, "%04d-%02d-%02d", dateStruct.tm_year + 1900, dateStruct.tm_mon + 1, dateStruct.tm_mday);
-}                                                                                                  //
-//===================================================================================================
-
 
 //=================Fonction Ajouter une reclamation ===============================
 void add_reclamation() {
@@ -313,8 +187,8 @@ void add_reclamation() {
     struct reclamation new_reclamation;
     new_reclamation.id = rand() % 1000;                                          //
     strcpy(new_reclamation.status, "en cours");
-afficher_date_actuelle(new_reclamation.date);// Fonction pour obtenir la date actuelle
-    printf("Nom d'utilisateur: ");
+afficher_date_actuelle(new_reclamation.date);// Fonction pour obtenir la date actuelle 43
+    printf("nom et prenom : ");
     scanf(" %[^\n]", new_reclamation.usernam);                                   //
     printf("Entrez le motif de la reclamation : ");
     scanf(" %[^\n]", new_reclamation.motif);
@@ -339,6 +213,201 @@ afficher_date_actuelle(new_reclamation.date);// Fonction pour obtenir la date ac
 }
 //=================================================================================
 
+//===========================Fonction modifier de reclamation d'utilisateur===========================================================================
+                                                                                                                                                    //
+void modifier_de_reclamation() {
+    int ID;                                                                                                                                         //
+    bool found = false;
+    printf("Entrez l'ID de la reclamation a modifier : ");
+    if (scanf("%d", &ID) != 1) {
+        printf("Erreur : Entree invalide.\n");                                                                                                      //
+        return;
+    }
+    for (int i = 0; i < reclamation_count; i++) {
+        if (reclamation_data[i].id == ID) {                                                                                                         //
+            found = true;
+
+            char current_date[20];
+            afficher_date_actuelle(current_date);                                                                                                   //
+
+            struct tm date_submitted = {0};
+            if (sscanf(reclamation_data[i].date, "%d-%d-%d", &date_submitted.tm_year, &date_submitted.tm_mon, &date_submitted.tm_mday) != 3) {
+                printf("Erreur : Date de soumission invalide.\n");
+                return;                                                                                                                             //
+            }
+            date_submitted.tm_year -= 1900;
+            date_submitted.tm_mon -= 1;
+                                                                                                                                                    //
+            struct tm date_now = {0};
+            if (sscanf(current_date, "%d-%d-%d", &date_now.tm_year, &date_now.tm_mon, &date_now.tm_mday) != 3) {
+                printf("Erreur : Date actuelle invalide.\n");                                                                                       //
+                return;
+            }                                                                                                                                       //
+            date_now.tm_year -= 1900;
+            date_now.tm_mon -= 1;
+
+            double seconds = difftime(mktime(&date_now), mktime(&date_submitted));
+            double hours = seconds / 3600;                                                                                                          //
+
+            if (hours < 24) {
+                printf("Reclamation trouvee. Entrez les nouvelles informations:\n");                                                                //
+                printf("Entrez le nouveau motif de la reclamation : ");
+                scanf(" %[^\n]", reclamation_data[i].motif);
+                printf("Entrez une nouvelle description detaillee du probleme: ");                                                                  //
+                scanf(" %[^\n]", reclamation_data[i].description);
+                printf("Entrez la nouvelle categorie de la reclamation: ");
+                scanf(" %[^\n]", reclamation_data[i].categorie);
+                                                                                                                                                    //
+                printf(" ~Reclamation modifiee avec succes~\n");
+            } else {
+                printf("Erreur : Vous ne pouvez pas modifier cette reclamation car plus de 24 heures se sont ecoulees.\n");
+            }                                                                                                                                       //
+            break;
+        }
+    }                                                                                                                                                //
+    if (!found) {
+        printf("Erreur : ID %d non trouve.\n", ID);
+    }                                                                                                                                               //
+}
+//=====================================================================================================================================================
+
+//===============================Fonction Supprimer la reclamation ============================
+void Supprimerlareclamationutilisateur() {                                                   //
+    int ID;
+    bool found = false;                                                                      //
+
+
+
+    printf("Entrez l'ID de la reclamation a supprimer : ");                                  //
+    scanf("%d", &ID);
+
+    for (int i = 0; i < reclamation_count; i++) {                                            //
+        if (reclamation_data[i].id == ID ) {
+            found = true;
+            for (int j = i; j < reclamation_count - 1; j++) {                                 //
+                reclamation_data[j] = reclamation_data[j + 1];
+            }                                                                                //
+            reclamation_count--;
+            printf("Reclamation avec ID %d supprimee avec succes.\n", ID);
+            break;                                                                           //
+        }
+    }
+
+    if (!found) {                                                                            //
+        printf("Erreur : ID %d non trouvee ou vous n'etes pas l'auteur de cette reclamation.\n", ID);
+    }
+}                                                                                            //
+//=============================================================================================
+
+//================Fonction my reclamations  ======================================
+void my_reclamations() {                                                        //
+     int ID;
+     printf("Entrez l'ID  ");                                                   //
+     scanf("%d", &ID);
+                                                                                //
+    printf("Liste de vos reclamations :\n");
+
+    bool hasReclamations = false;
+
+     for (int i = 0; i < reclamation_count; i++) {                              //
+        if (reclamation_data[i].id == ID ) {
+            hasReclamations = true;
+            printf("======================================\n");
+            printf("Nom d'utilisateur: %s\n", reclamation_data[i].usernam);     //
+            printf("ID de reclamation : %d\n", reclamation_data[i].id);
+            printf("Motif : %s\n", reclamation_data[i].motif);
+            printf("Description : %s\n", reclamation_data[i].description);
+            printf("Categorie : %s\n", reclamation_data[i].categorie);          //
+            printf("Statut : %s\n", reclamation_data[i].status);
+            printf("Date : %s\n", reclamation_data[i].date);
+            printf("======================================\n");                 //
+        }
+    }                                                                           //
+
+    if (!hasReclamations) {
+   printf("Erreur : ID %d non trouvee.\n", ID);      }
+}                                                                               //
+//================================================================================
+
+//===============================================Fonction Menu admin =====================================================================
+void menu_admin() {
+    int adminchoice;                                                                                                                    //
+    while (isAdmin) {
+        printf("------------------ ~ Admin Menu~  -----------------\n");
+        printf("          1. Voir tous les utilisateurs            \n");                                                                //
+        printf("             2. Supprimer un compte                \n");
+        printf("            3. lister les reclamations             \n");
+        printf("       4. modifier le statut de reclamation        \n");                                                                //
+        printf("            5. Supprimer la reclamation            \n");
+        printf("        6.Changer le role de l'utilisateur         \n");
+        printf("            7. Ajouter une reclamation             \n");                                                                //
+        printf("                  0. Quitter                       \n");
+        printf("Veuillez entrer votre choix ici ==> ");
+        scanf("%d", &adminchoice);                                                                                                      //
+
+        switch (adminchoice) {
+            case 1:                                                                                                                     //
+                printf("Total des comptes : %d\n", totalaccounts);
+                for (int i = 0; i < totalaccounts; i++) {
+                    printf("Nom d'utilisateur : %s | Telephone : %s\n", clients_data[i].nomUtilisateur, clients_data[i].tele);          //
+                }
+                break;
+                                                                                                                                        //
+            case 2:
+             totalaccounts = supprimer_comte(clients_data, totalaccounts); //Fonction pour supprimer un compte utilisateur 421
+                break;
+                                                                                                                                        //
+            case 3:
+                list_les_reclamations();//Fonction list les réclamations 433                                                            //
+                break;
+            case 4:                                                                                                                     //
+                    reclamationstatus();//Fonction modifier le statut de reclamation 450
+                    break;
+            case 5:                                                                                                                     //
+                   Supprimer_la_reclamation();//Fonction Supprimer la réclamation 476
+                    break;
+             case 6:
+                   Changer_le_role_de_lutilisateur();//Fonction Changer le role de l'utilisateur 500                                       //
+                    break;
+            case 7:
+                    add_reclamation();//Fonction Ajouter une reclamation 180
+                    break;                                                                                                             //
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            case 0:
+                printf("Administrateur deconnecte.\n");
+                isAdmin = 0;                                                                                                           //
+                break;
+
+            default:                                                                                                                   //
+                printf("Choix invalide.  veuillez reessayer.\n");
+        }
+    }                                                                                                                                 //
+}
+                                                                                                                                    //
+//=====================================================================================================================================
+
 //====================== Fonction pour supprimer un compte utilisateur=============
 int supprimer_comte(struct client clients_data[], int totalaccounts) {           //
     char nameuser[100];                                                          //
@@ -362,8 +431,7 @@ int supprimer_comte(struct client clients_data[], int totalaccounts) {          
 
 //=================Fonction list les réclamations=========================================
 void list_les_reclamations() {                                                          //
-    printf("Liste de toutes les reclamations :\n");
-    printf("==================================\n");                                      //
+    printf("Liste de toutes les reclamations :\n");                                     //
     for (int i = 0; i < reclamation_count; i++) {
         printf("======================================\n");                              //
          printf("Nom d'utilisateur: %s               \n", reclamation_data[i].usernam);
@@ -428,23 +496,23 @@ void Supprimer_la_reclamation() {                                               
 }                                                                                        //
 //=========================================================================================
 
-//=========================Fonction Changer le role de l'utilisateur ======================
-void Changer_le_role_de_lutilisateur() {
+//=========================Fonction Changer le role de l'utilisateur =====================
+void Changer_le_role_de_lutilisateur() {                                                //
     char nomUtilisateur[50];
-    printf("Entrez le nom d'utilisateur du compte a changer de role : ");
+    printf("Entrez le nom d'utilisateur du compte a changer de role : ");               //
     scanf("%s", nomUtilisateur);
 
-    for (int i = 0; i < totalaccounts; i++) {
+    for (int i = 0; i < totalaccounts; i++) {                                           //
         if (strcmp(clients_data[i].nomUtilisateur, nomUtilisateur) == 0) {
-            clients_data[i].isAgent = !clients_data[i].isAgent;
+            clients_data[i].isAgent = !clients_data[i].isAgent;                         //
             printf("Role de l'utilisateur %s change avec succes.\n", nomUtilisateur);
             printf("Le role actuel de %s est maintenant : %s\n", nomUtilisateur, clients_data[i].isAgent ? "Agent" : "Client");
-menu_admin();
+menu_admin();                                                                           //
                 return;
-        }
+        }                                                                               //
     }
 
-    printf("Utilisateur non trouvé.\n");
+    printf("Utilisateur non trouve.\n");                                                //
 }
                                                                                         //
 //========================================================================================
@@ -463,13 +531,13 @@ void menu_agent(){                                                              
                                                                                          //
         switch (agentcoice) {
             case 1:                                                                      //
-                list_les_reclamations();//Fonction list les réclamations
+                list_les_reclamations();//Fonction list les réclamations 433
                 break;                                                                   //
             case 2:
-                 reclamationstatus();//Fonction modifier le statut de reclamation        //
+                reclamationstatus();//Fonction modifier le statut de reclamation 450     //
                 break;
             case 3:                                                                      //
-                Supprimer_la_reclamation();//Fonction Supprimer la réclamation
+               Supprimer_la_reclamation();//Fonction Supprimer la réclamation 476
                 break;                                                                   //
             case 0:
                 printf("agent deconnecte.\n");                                           //
@@ -481,61 +549,29 @@ void menu_agent(){                                                              
 }                                                                                        //
 //=========================================================================================
 
-//=================Fonction Menu admin ==============================================
-void menu_admin() {
-    int adminchoice;
-    while (isAdmin) {
-        printf("------------------ ~ Admin Menu~  -----------------\n");
-        printf("          1. Voir tous les utilisateurs            \n");
-        printf("             2. Supprimer un compte                \n");
-        printf("            3. lister les reclamations             \n");
-        printf("       4. modifier le statut de reclamation        \n");
-        printf("            5. Supprimer la reclamation            \n");
-        printf("        6.Changer le role de l'utilisateur         \n");
-        printf("            7. Ajouter une reclamation             \n");
-        printf("                  0. Quitter                       \n");
-        printf("Veuillez entrer votre choix ici ==> ");
-        scanf("%d", &adminchoice);
-
-        switch (adminchoice) {
-            case 1:
-                printf("Total des comptes : %d\n", totalaccounts);
-                for (int i = 0; i < totalaccounts; i++) {
-                    printf("Nom d'utilisateur : %s | Telephone : %s\n", clients_data[i].nomUtilisateur, clients_data[i].tele);
-                }
-                break;
-
-            case 2:
-             totalaccounts = supprimer_comte(clients_data, totalaccounts); //Fonction pour supprimer un compte utilisateur
-                break;
-
-            case 3:
-                list_les_reclamations();//Fonction list les réclamations
-                break;
-            case 4:
-                    reclamationstatus();//Fonction modifier le statut de reclamation
-                    break;
-            case 5:
-                   Supprimer_la_reclamation();//Fonction Supprimer la réclamation
-                    break;
-             case 6:
-                   Changer_le_role_de_lutilisateur();//Fonction Changer le role de l'utilisateur
-                    break;
-            case 7:
-                    add_reclamation();//Fonction Ajouter une reclamation
-                    break;
 
 
-            case 0:
-                printf("Administrateur deconnecte.\n");
-                isAdmin = 0;
-                break;
 
-            default:
-                printf("Choix invalide.  veuillez reessayer.\n");
-        }
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -543,8 +579,9 @@ void menu_admin() {
 int main() {
     int choix;
     do {
+        printf("======================================================\n");
         printf("Bienvenue dans le systeme de gestion des reclamations.\n");
-        printf("                    Menu                          \n");
+        printf("                       Menu                           \n");
         printf("                1. Creer un compte                    \n");
         printf("                 2. Se connecter                      \n");
         printf("                  0. Quitter                          \n");
@@ -553,11 +590,11 @@ int main() {
 
         switch (choix) {
             case 1:
-                create_account();//Fonction create account
+                create_account();//==Fonction create account 53
                 break;
             case 2:
 
-                Se_connecter();// Fonction Se connecter
+                Se_connecter();//==Fonction Se connecter 103
                 break;
             case 0:
                 printf("Merci d'avoir utilise le systeme. Au revoir!\n");
@@ -570,3 +607,4 @@ int main() {
 
     return 0;
 }
+
