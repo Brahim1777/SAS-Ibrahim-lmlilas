@@ -22,6 +22,7 @@ struct client {                          //
     char nomUtilisateur[50];             //
     char motDePasse[50];                 //
     char tele[10];                       //
+     bool isAgent;
 };                                       //
 struct client clients_data[MAX_USERS];   //
 //=========================================
@@ -41,10 +42,10 @@ struct reclamation reclamation_data[MAX_USERS];
 
 //================== Fonction pour vérifier les contraintes du mot de passe==========================================================
 bool verifierMotDePasse(char motDePasse[], char nomUtilisateur[]) {                                                                //
-     // **Vérifie la longueur minimale du mot de passe*****|                                                       //
+     // *Vérifie la longueur minimale du mot de passe**|                                                       //
     if (strlen(motDePasse) < 7) {
         return false;}                                                                                                              //
-      //**********
+      //****
     bool majuscule = false, minuscule = false, chiffre = false, special = false;                                                    //
     for (int i = 0; motDePasse[i] != '\0'; i++) {
         if (motDePasse[i] >= 'A' && motDePasse[i] <= 'Z') {                                                                         //
@@ -53,13 +54,13 @@ bool verifierMotDePasse(char motDePasse[], char nomUtilisateur[]) {             
             minuscule = true;}
              else if (motDePasse[i] >= '0' && motDePasse[i] <= '9') {                                                               //
             chiffre = true;}
-             else if (strchr("!@#$%^&*", motDePasse[i])) {                                                                          //
+             else if (strchr("!@#$%^&*./\;,", motDePasse[i])) {                                                                          //
             special = true;}
         }                                                                                                                           //
 //* Vérifie si le mot de passe contient au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial
      if (!majuscule || !minuscule || !chiffre || !special) {                                                                        //
         return false;}
-      // **Vérifie si le mot de passe contient le nom d'utilisateur*|                                                           //
+      // *Vérifie si le mot de passe contient le nom d'utilisateur|                                                           //
     if (strstr(motDePasse, nomUtilisateur) != NULL) {
         return false;}
                                                                                                                                     //
@@ -91,30 +92,46 @@ void create_account() {                                                         
 
 //================================================= Fonction Se connecter ================================================
 void Se_connecter() {
-    char name[100], password[100];                                                                                      //
+    char name[100], password[100];
     isAdmin = 0;
-                                                                                                                        //
-    printf("Entrez votre nom d'utilisateur : ");
-    scanf(" %[^\n]", name);                                                                                             //
-    printf("Entrez votre mot de passe : ");
-    scanf(" %[^\n]", password);
-                                                                                                                        //
-    if (strcmp(name, admin_username) == 0 && strcmp(password, admin_password) == 0) {
-        printf("Connexion reussie en tant qu'administrateur.\n");
-        isAdmin = 1;                                                                                                    //
-        menu_admin();//Fonction Menu admin
-        return;
-    }
-                                                                                                                        //
-    for (int i = 0; i < totalaccounts; i++) {
-        if (strcmp(clients_data[i].nomUtilisateur, name) == 0 && strcmp(clients_data[i].motDePasse, password) == 0) {   //
-            printf("%s, vous êtes connecté\n", clients_data[i].nomUtilisateur);
-            Menu_dutilisateur();// Fonction Menu utilisateur                                                                                       //
+    int attempts = 0;
+
+    while (attempts < 3) {
+        printf("Entrez votre nom d'utilisateur : ");
+        scanf(" %[^\n]", name);
+        printf("Entrez votre mot de passe : ");
+        scanf(" %[^\n]", password);
+
+        if (strcmp(name, admin_username) == 0 && strcmp(password, admin_password) == 0) {
+            printf("Connexion reussie en tant qu'administrateur.\n");
+            isAdmin = 1;
+            menu_admin();
             return;
         }
-    }                                                                                                                   //
-    printf("Erreur : nom d'utilisateur ou mot de passe incorrect.\n");
-}                                                                                                                       //
+
+        for (int i = 0; i < totalaccounts; i++) {
+            if (strcmp(clients_data[i].nomUtilisateur, name) == 0 && strcmp(clients_data[i].motDePasse, password) == 0) {
+                printf("%s, vous êtes connecte\n", clients_data[i].nomUtilisateur);
+                if (clients_data[i].isAgent) {
+                    menu_agent();
+                } else {
+                    Menu_dutilisateur();
+                }
+                return;
+            }
+        }
+
+        attempts++;
+        printf("Erreur : nom d'utilisateur ou mot de passe incorrect. Tentatives restantes : %d\n", 3 - attempts);
+
+        if (attempts == 3) {
+            printf("Trop de tentatives echouees. Veuillez patienter 1 minute avant de reessayer.\n");
+            Sleep(60000);
+            printf("Vous pouvez maintenant réessayer.\n");
+            attempts = 0;
+        }
+    }
+}                                                              //
 //========================================================================================================================
 
 //=================Fonction Menu utilisateur =======================================
@@ -122,7 +139,7 @@ void Menu_dutilisateur() {                                                      
     int choice;
     do {                                                                         //
         printf("               Menu d'utilisateur                     \n");
-        printf("                  ~Menu~                            \n");      //
+        printf("                    Menu                              \n");      //
         printf("            1. Ajouter une reclamation                \n");
         printf("                 0. Quitter                           \n");      //
         printf("Veuillez entrer votre choix ici ==> ");
@@ -227,6 +244,7 @@ void list_les_reclamations() {                                                  
 void reclamationstatus() {                                                               //
     int ID;
     bool found = false;                                                                  //
+
     printf("Entrez l'ID de la reclamation a modifier : ");
     scanf("%d", &ID);                                                                    //
 
@@ -242,14 +260,88 @@ void reclamationstatus() {                                                      
             break;                                                                       //
         }
     }                                                                                    //
-    if (!found) {                                                                        
+    if (!found) {
         printf("Erreur : ID %d non trouvee.\n", ID);                                     //
-    }                                                                                    
+    }
 }                                                                                        //
 //=========================================================================================
 
+//=======================Fonction Supprimer la réclamation=================================
+void Supprimer_la_reclamation() {                                                        //
+    int ID;
+    bool found = false;                                                                  //
+    printf("Entrez l'ID de la reclamation a supprimer : ");
+    scanf("%d", &ID);                                                                    //
 
+    for (int i = 0; i < reclamation_count; i++) {                                        //
+        if (reclamation_data[i].id == ID) {
+            found = true;                                                                //
+            for (int j = i; j < reclamation_count - 1; j++) {
+                reclamation_data[j] = reclamation_data[j + 1];                           //
+            }
+            reclamation_count--;                                                         //
+            printf("Reclamation avec ID %d supprimee avec succes.\n", ID);
+            break;                                                                       //
+        }
+    }                                                                                    //
+    if (!found) {
+        printf("Erreur : ID %d non trouvee.\n", ID);                                     //
+    }
+}                                                                                        //
+//=========================================================================================
 
+//=========================Fonction Changer le role de l'utilisateur ======================
+void Changer_le_role_de_lutilisateur() {
+    char nomUtilisateur[50];
+    printf("Entrez le nom d'utilisateur du compte a changer de role : ");
+    scanf("%s", nomUtilisateur);
+
+    for (int i = 0; i < totalaccounts; i++) {
+        if (strcmp(clients_data[i].nomUtilisateur, nomUtilisateur) == 0) {
+            clients_data[i].isAgent = !clients_data[i].isAgent;
+            printf("Role de l'utilisateur %s change avec succes.\n", nomUtilisateur);
+            printf("Le role actuel de %s est maintenant : %s\n", nomUtilisateur, clients_data[i].isAgent ? "Agent" : "Client");
+menu_admin();
+                return;
+        }
+    }
+
+    printf("Utilisateur non trouvé.\n");
+}
+                                                                              //
+//========================================================================================
+
+//========================Fonction Menu Reclamation agent =================================
+void menu_agent(){                                                                      //
+  int agentcoice;
+     do {                                                                                //
+        printf("------------------ ~ Agent Menu~  -----------------\n");
+        printf("            1. lister les reclamations             \n");                 //
+        printf("       2. modifier le statut de reclamation        \n");
+        printf("            3. Supprimer la reclamation            \n");                 //
+        printf("                  0. Quitter                       \n");
+        printf("Veuillez entrer votre choix ici ==> ");                                  //
+        scanf("%d", &agentcoice);
+                                                                                         //
+        switch (agentcoice) {
+            case 1:                                                                      //
+                list_les_reclamations();//Fonction list les réclamations
+                break;                                                                   //
+            case 2:
+                 reclamationstatus();//Fonction modifier le statut de reclamation        //
+                break;
+            case 3:                                                                      //
+                Supprimer_la_reclamation();//Fonction Supprimer la réclamation
+                break;                                                                   //
+            case 0:
+                printf("agent deconnecte.\n");                                           //
+                break;
+            default:                                                                     //
+                printf("Invalid choice, please try again.\n");
+        }                                                                                //
+    } while (agentcoice != 0);
+}                                                                                        //
+//=========================================================================================
 
 //=================Fonction Menu admin ==============================================
 void menu_admin() {
@@ -260,6 +352,8 @@ void menu_admin() {
         printf("             2. Supprimer un compte                \n");
         printf("            3. lister les reclamations             \n");
         printf("       4. modifier le statut de reclamation        \n");
+        printf("            5. Supprimer la reclamation            \n");
+        printf("        6.Changer le role de l'utilisateur         \n");
         printf("                  0. Quitter                       \n");
         printf("Veuillez entrer votre choix ici ==> ");
         scanf("%d", &adminchoice);
@@ -282,6 +376,12 @@ void menu_admin() {
             case 4:
                     reclamationstatus();//Fonction modifier le statut de reclamation
                     break;
+            case 5:
+                   Supprimer_la_reclamation();//Fonction Supprimer la réclamation
+                    break;
+             case 6:
+                   Changer_le_role_de_lutilisateur();//Fonction Changer le role de l'utilisateur
+                    break;
 
             case 0:
                 printf("Administrateur deconnecte.\n");
@@ -301,7 +401,7 @@ int main() {
     int choix;
     do {
         printf("Bienvenue dans le systeme de gestion des reclamations.\n");
-        printf("                    ~Menu~                          \n");
+        printf("                    Menu                          \n");
         printf("                1. Creer un compte                    \n");
         printf("                 2. Se connecter                      \n");
         printf("                  0. Quitter                          \n");
