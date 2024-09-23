@@ -115,7 +115,7 @@ void Se_connecter() {                                                           
         if (strcmp(name, admin_username) == 0 && strcmp(password, admin_password) == 0) {
             printf("Connexion reussie en tant qu'administrateur.\n");
             isAdmin = 1;                                                                                                            //
-            menu_admin();//Fonction Menu admin 333                                                                                  //
+            menu_admin();//Fonction Menu admin                                                                                   //
             return;
         }
                                                                                                                                     //
@@ -123,9 +123,9 @@ void Se_connecter() {                                                           
             if (strcmp(clients_data[i].nomUtilisateur, name) == 0 && strcmp(clients_data[i].motDePasse, password) == 0) {
                 printf("%s, vous etes connecte\n", clients_data[i].nomUtilisateur);
                 if (clients_data[i].isAgent) {                                                                                      //
-                    menu_agent();//Fonction Menu Reclamation agent 521                                                                 //
+                    menu_agent();//Fonction Menu Reclamation agent                                                                 //
                 } else {
-                    Menu_dutilisateur();//Fonction Menu utilisateur 137
+                    Menu_dutilisateur();//Fonction Menu utilisateur 
                 }                                                                                                                   //
                 return;                                                                                                             //
             }
@@ -159,16 +159,16 @@ void Menu_dutilisateur() {                                                      
         scanf("%d", &choice);                                                    //
 
         if (choice == 1) {                                                       //
-          add_reclamation();//Fonction Ajouter une reclamation 180
+          add_reclamation();//Fonction Ajouter une reclamation 
         }
         else if (choice==2){                                                     //
-        modifier_de_reclamation();//Fonction modifier my reclamation 216
+        modifier_de_reclamation();//Fonction modifier my reclamation 
         }
         else if (choice==3){
-        Supprimerlareclamationutilisateur();//Fonction Supprimer la reclamation 274
+        Supprimerlareclamationutilisateur();//Fonction Supprimer la reclamation 
         }
         else if (choice==4){                                                     //
-        my_reclamations();//Fonction my reclamations 302                                                       //
+        my_reclamations();//Fonction my reclamations 302                                                      
         }
         else if (choice != 0) {                                                  //
             printf("Choix invalide, reessayez.\n");
@@ -340,7 +340,9 @@ void menu_admin() {
         printf("       4. modifier le statut de reclamation        \n");                                                                //
         printf("            5. Supprimer la reclamation            \n");
         printf("        6.Changer le role de l'utilisateur         \n");
-        printf("            7. Ajouter une reclamation             \n");                                                                //
+        printf("            7. Ajouter une reclamation             \n");
+        printf("8. Afficher les reclamations ordonnees par priorite\n");
+        printf("             9.Statistiques et Rapports            \n");
         printf("                  0. Quitter                       \n");
         printf("Veuillez entrer votre choix ici ==> ");
         scanf("%d", &adminchoice);                                                                                                      //
@@ -354,47 +356,31 @@ void menu_admin() {
                 break;
                                                                                                                                         //
             case 2:
-             totalaccounts = supprimer_comte(clients_data, totalaccounts); //Fonction pour supprimer un compte utilisateur 421
+             totalaccounts = supprimer_comte(clients_data, totalaccounts); //Fonction pour supprimer un compte utilisateur
                 break;
                                                                                                                                         //
             case 3:
-                list_les_reclamations();//Fonction list les réclamations 433                                                            //
+                list_les_reclamations();//Fonction list les réclamations                                                                //
                 break;
             case 4:                                                                                                                     //
-                    reclamationstatus();//Fonction modifier le statut de reclamation 450
+                    reclamationstatus();//Fonction modifier le statut de reclamation
                     break;
             case 5:                                                                                                                     //
-                   Supprimer_la_reclamation();//Fonction Supprimer la réclamation 476
+                   Supprimer_la_reclamation();//Fonction Supprimer la réclamation
                     break;
              case 6:
-                   Changer_le_role_de_lutilisateur();//Fonction Changer le role de l'utilisateur 500                                       //
+                   Changer_le_role_de_lutilisateur();//Fonction Changer le role de l'utilisateur                                       //
                     break;
             case 7:
                     add_reclamation();//Fonction Ajouter une reclamation 180
                     break;                                                                                                             //
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            case 8:
+                   afficherReclamationsTriees();//Fonction Afficher les reclamations ordonnees par priorite
+                    break;
+            case 9:
+                Statistiques_Rapports();//Fonction Statistiques_Rapports
+                    break;
             case 0:
                 printf("Administrateur deconnecte.\n");
                 isAdmin = 0;                                                                                                           //
@@ -525,20 +511,28 @@ void menu_agent(){                                                              
         printf("            1. lister les reclamations             \n");                 //
         printf("       2. modifier le statut de reclamation        \n");
         printf("            3. Supprimer la reclamation            \n");                 //
+        printf("4. Afficher les reclamations ordonnees par priorite\n");
+        printf("             5.Statistiques et Rapports            \n");                 //
         printf("                  0. Quitter                       \n");
         printf("Veuillez entrer votre choix ici ==> ");                                  //
         scanf("%d", &agentcoice);
                                                                                          //
         switch (agentcoice) {
             case 1:                                                                      //
-                list_les_reclamations();//Fonction list les réclamations 433
+                list_les_reclamations();//Fonction list les réclamations
                 break;                                                                   //
             case 2:
-                reclamationstatus();//Fonction modifier le statut de reclamation 450     //
+                reclamationstatus();//Fonction modifier le statut de reclamation         //
                 break;
             case 3:                                                                      //
-               Supprimer_la_reclamation();//Fonction Supprimer la réclamation 476
+               Supprimer_la_reclamation();//Fonction Supprimer la réclamation
                 break;                                                                   //
+            case 4:
+                afficherReclamationsTriees();//Fonction Afficher les reclamations ordonnees par priorite
+                break;
+             case 5:
+                   afficherReclamationsTriees();//Fonction Afficher les reclamations ordonnees par priorite
+                    break;
             case 0:
                 printf("agent deconnecte.\n");                                           //
                 break;
@@ -549,26 +543,81 @@ void menu_agent(){                                                              
 }                                                                                        //
 //=========================================================================================
 
+//=====================================Fonction Afficher les reclamations ordonnees par priorite================================
+
+int prioriteIndex(char categorie[]) {
+    if (strcmp(categorie, "haute") == 0) return 1;
+    if (strcmp(categorie, "moyenne") == 0) return 2;
+    return 3;  // Default case for "basse" or other values
+}
+void trierReclamationsParPriorite() {
+    int i, j;
+    struct reclamation temp;
+
+    for (i = 0; i < reclamation_count - 1; i++) {
+        for (j = 0; j < reclamation_count - i - 1; j++) {
+            if (prioriteIndex(reclamation_data[j].categorie) > prioriteIndex(reclamation_data[j + 1].categorie)) {
+                // Swap reclamations based on priority
+                temp = reclamation_data[j];
+                reclamation_data[j] = reclamation_data[j + 1];
+                reclamation_data[j + 1] = temp;
+            }
+        }
+    }
+    printf("Reclamations triees par priorite avec succes.\n");
+}
+void afficherReclamationsTriees() {
+    trierReclamationsParPriorite();
+
+    printf("==================== Liste des Reclamations Triees ====================\n");
+    for (int i = 0; i < reclamation_count; i++) {
+        printf("ID: %d\n", reclamation_data[i].id);
+        printf("Nom d'utilisateur: %s\n", reclamation_data[i]. usernam);
+        printf("Motif: %s\n", reclamation_data[i].motif);
+        printf("Description: %s\n", reclamation_data[i].description);
+        printf("Categorie: %s\n", reclamation_data[i].categorie);
+        printf("Statut: %s\n", reclamation_data[i].status);
+        printf("Date: %s\n", reclamation_data[i].date);
+        printf("--------------------------------------------------------------------\n");
+    }
+}
+//==============================================================================================================
+
+//===========================================Fonction Statistiques_Rapports======================================
 
 
+void Statistiques_Rapports() {
+    int totalReclamations = reclamation_count;
+    int totalUsers = totalaccounts;
+    int resolvedCount = 0;
+    int inProgressCount = 0;
+    int rejectedCount = 0;
 
 
+    for (int i = 0; i < reclamation_count; i++) {
+        if (strcmp(reclamation_data[i].status, "resolue") == 0) {
+            resolvedCount++;
+        } else if (strcmp(reclamation_data[i].status, "en cours") == 0) {
+            inProgressCount++;
+        } else if (strcmp(reclamation_data[i].status, "rejetee") == 0) {
+            rejectedCount++;
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // Print the statistics
+    printf("\n===== Statistiques & Rapports ====\n");
+    printf("Total des reclamations |     %d    |\n", totalReclamations);
+    printf("------------------------------------\n");
+    printf("Total des utilisateurs |     %d    |\n", totalUsers);
+    printf("------------------------------------\n");
+    printf("Reclamations resolues  |     %d    |\n", resolvedCount);
+    printf("------------------------------------\n");
+    printf("Reclamations en cours  |     %d    |\n", inProgressCount);
+    printf("------------------------------------\n");
+    printf("Reclamations rejetees  |     %d    |\n", rejectedCount);
+    printf("====================================\n");
+}
+//==================================================================================================================
 
 
 
@@ -590,11 +639,11 @@ int main() {
 
         switch (choix) {
             case 1:
-                create_account();//==Fonction create account 53
+                create_account();//==Fonction create account
                 break;
             case 2:
 
-                Se_connecter();//==Fonction Se connecter 103
+                Se_connecter();//==Fonction Se connecter
                 break;
             case 0:
                 printf("Merci d'avoir utilise le systeme. Au revoir!\n");
