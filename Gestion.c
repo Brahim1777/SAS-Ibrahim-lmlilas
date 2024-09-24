@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -125,7 +126,7 @@ void Se_connecter() {                                                           
                 if (clients_data[i].isAgent) {                                                                                      //
                     menu_agent();//Fonction Menu Reclamation agent                                                                 //
                 } else {
-                    Menu_dutilisateur();//Fonction Menu utilisateur 
+                    Menu_dutilisateur();//Fonction Menu utilisateur
                 }                                                                                                                   //
                 return;                                                                                                             //
             }
@@ -159,16 +160,16 @@ void Menu_dutilisateur() {                                                      
         scanf("%d", &choice);                                                    //
 
         if (choice == 1) {                                                       //
-          add_reclamation();//Fonction Ajouter une reclamation 
+          add_reclamation();//Fonction Ajouter une reclamation
         }
         else if (choice==2){                                                     //
-        modifier_de_reclamation();//Fonction modifier my reclamation 
+        modifier_de_reclamation();//Fonction modifier my reclamation
         }
         else if (choice==3){
-        Supprimerlareclamationutilisateur();//Fonction Supprimer la reclamation 
+        Supprimerlareclamationutilisateur();//Fonction Supprimer la reclamation
         }
         else if (choice==4){                                                     //
-        my_reclamations();//Fonction my reclamations 302                                                      
+        my_reclamations();//Fonction my reclamations 302
         }
         else if (choice != 0) {                                                  //
             printf("Choix invalide, reessayez.\n");
@@ -328,6 +329,120 @@ void my_reclamations() {                                                        
    printf("Erreur : ID %d non trouvee.\n", ID);      }
 }                                                                               //
 //================================================================================
+//==========================Fonction Rechercher les reclamations =======================================
+void Rechercher_reclamations() {
+    int choix;
+    printf("Choisissez un critere de recherche :\n");
+    printf("1. Rechercher par nom d'utilisateur\n");
+    printf("2. Rechercher par date\n");
+    printf("3. Rechercher par description\n");
+    printf("4. Rechercher par statut\n");
+    printf("0. Quitter la recherche\n");
+    printf("Veuillez entrer votre choix ici ==> ");
+    scanf("%d", &choix);
+
+    switch (choix) {
+        case 1: {
+            char nomUtilisateur[50];
+            printf("Entrez le nom et prenom : ");
+            scanf(" %[^\n]", nomUtilisateur);
+            printf("Résultats de la recherche par nom et prenom '%s' :\n", nomUtilisateur);
+            bool found = false;
+            for (int i = 0; i < reclamation_count; i++) {
+                if (strcmp(reclamation_data[i].usernam, nomUtilisateur) == 0) {
+                    found = true;
+                    afficher_detail_reclamation(reclamation_data[i]);
+                }
+            }
+            if (!found) {
+                printf("Aucune reclamation trouvée pour l'utilisateur %s.\n", nomUtilisateur);
+            }
+            break;
+        }
+        case 2: {
+            char dateRecherche[20];
+            printf("Entrez la date (YYYY-MM-DD) : ");
+            scanf(" %[^\n]", dateRecherche);
+            printf("Résultats de la recherche par date '%s' :\n", dateRecherche);
+            bool found = false;
+            for (int i = 0; i < reclamation_count; i++) {
+                if (strcmp(reclamation_data[i].date, dateRecherche) == 0) {
+                    found = true;
+                    afficher_detail_reclamation(reclamation_data[i]);
+                }
+            }
+            if (!found) {
+                printf("Aucune réclamation trouvée pour la date %s.\n", dateRecherche);
+            }
+            break;
+        }
+        case 3: {
+            char descriptionRecherche[200];
+            printf("Entrez un mot clé de description : ");
+            scanf(" %[^\n]", descriptionRecherche);
+            printf("Résultats de la recherche par description '%s' :\n", descriptionRecherche);
+            bool found = false;
+            for (int i = 0; i < reclamation_count; i++) {
+                if (strstr(reclamation_data[i].description, descriptionRecherche) != NULL) {
+                    found = true;
+                    afficher_detail_reclamation(reclamation_data[i]);
+                }
+            }
+            if (!found) {
+                printf("Aucune réclamation trouvée avec la description contenant '%s'.\n", descriptionRecherche);
+            }
+            break;
+        }
+        case 4: {
+            char statutRecherche[50];
+            printf("Entrez le statut (ex: en cours, resolue, rejetee) : ");
+            scanf(" %[^\n]", statutRecherche);
+            printf("Résultats de la recherche par statut '%s' :\n", statutRecherche);
+            bool found = false;
+            for (int i = 0; i < reclamation_count; i++) {
+                if (strcmp(reclamation_data[i].status, statutRecherche) == 0) {
+                    found = true;
+                    afficher_detail_reclamation(reclamation_data[i]);
+                }
+            }
+            if (!found) {
+                printf("Aucune réclamation trouvée avec le statut '%s'.\n", statutRecherche);
+            }
+            break;
+        }
+        case 0:
+            printf("Retour au menu principal.\n");
+            break;
+        default:
+            printf("Choix invalide, veuillez réessayer.\n");
+            break;
+    }
+}
+
+// Fonction d'affichage des détails d'une réclamation
+void afficher_detail_reclamation(struct reclamation reclam) {
+    printf("======================================\n");
+    printf("  nom et prenom  : %s\n", reclam.usernam);
+    printf("ID de réclamation: %d\n", reclam.id);
+    printf("Motif: %s\n", reclam.motif);
+    printf("Description: %s\n", reclam.description);
+    printf("Catégorie: %s\n", reclam.categorie);
+    printf("Statut: %s\n", reclam.status);
+    printf("Date: %s\n", reclam.date);
+    printf("======================================\n");
+}
+//=======================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
 
 //===============================================Fonction Menu admin =====================================================================
 void menu_admin() {
@@ -340,9 +455,9 @@ void menu_admin() {
         printf("       4. modifier le statut de reclamation        \n");                                                                //
         printf("            5. Supprimer la reclamation            \n");
         printf("        6.Changer le role de l'utilisateur         \n");
-        printf("            7. Ajouter une reclamation             \n");
-        printf("8. Afficher les reclamations ordonnees par priorite\n");
-        printf("             9.Statistiques et Rapports            \n");
+        printf("7. Afficher les reclamations ordonnees par priorite\n");
+        printf("             8.Statistiques et Rapports            \n");
+        printf("            9.Rechercher les reclamations          \n");
         printf("                  0. Quitter                       \n");
         printf("Veuillez entrer votre choix ici ==> ");
         scanf("%d", &adminchoice);                                                                                                      //
@@ -371,15 +486,15 @@ void menu_admin() {
              case 6:
                    Changer_le_role_de_lutilisateur();//Fonction Changer le role de l'utilisateur                                       //
                     break;
-            case 7:
-                    add_reclamation();//Fonction Ajouter une reclamation 180
-                    break;                                                                                                             //
 
-            case 8:
+            case 7:
                    afficherReclamationsTriees();//Fonction Afficher les reclamations ordonnees par priorite
                     break;
-            case 9:
+            case 8:
                 Statistiques_Rapports();//Fonction Statistiques_Rapports
+                    break;
+            case 9:
+               Rechercher_reclamations();//Fonction Rechercher les reclamations
                     break;
             case 0:
                 printf("Administrateur deconnecte.\n");
@@ -420,7 +535,7 @@ void list_les_reclamations() {                                                  
     printf("Liste de toutes les reclamations :\n");                                     //
     for (int i = 0; i < reclamation_count; i++) {
         printf("======================================\n");                              //
-         printf("Nom d'utilisateur: %s               \n", reclamation_data[i].usernam);
+         printf("  nom et prenom  : %s               \n", reclamation_data[i].usernam);
         printf("ID de reclamation : %d               \n", reclamation_data[i].id);       //
         printf("       Motif      : %s               \n", reclamation_data[i].motif);
         printf("    Description   : %s               \n", reclamation_data[i].description);
@@ -512,7 +627,8 @@ void menu_agent(){                                                              
         printf("       2. modifier le statut de reclamation        \n");
         printf("            3. Supprimer la reclamation            \n");                 //
         printf("4. Afficher les reclamations ordonnees par priorite\n");
-        printf("             5.Statistiques et Rapports            \n");                 //
+        printf("             5.Statistiques et Rapports            \n");
+        printf("            6.Rechercher les reclamations          \n");
         printf("                  0. Quitter                       \n");
         printf("Veuillez entrer votre choix ici ==> ");                                  //
         scanf("%d", &agentcoice);
@@ -533,6 +649,9 @@ void menu_agent(){                                                              
              case 5:
                    afficherReclamationsTriees();//Fonction Afficher les reclamations ordonnees par priorite
                     break;
+            case 6:
+               Rechercher_reclamations();//Fonction Rechercher les reclamations
+                    break;
             case 0:
                 printf("agent deconnecte.\n");                                           //
                 break;
@@ -543,45 +662,50 @@ void menu_agent(){                                                              
 }                                                                                        //
 //=========================================================================================
 
-//=====================================Fonction Afficher les reclamations ordonnees par priorite================================
+//=====================================Fonction Afficher les reclamations ordonnees par priorite==============================
+                                                                                                                            //
+int prioriteIndex(char description[]) {                                                                                     //
+    if (strstr(description, "Urgence")  || strstr(description, "urgence") || strstr(description, "Décisif") || strstr(description, "décisif")
+    || strstr(description, "d'urgence") || strstr(description, "Urgent")|| strstr(description, "urgent")|| strstr(description, "d'urgence"))
 
-int prioriteIndex(char categorie[]) {
-    if (strcmp(categorie, "haute") == 0) return 1;
-    if (strcmp(categorie, "moyenne") == 0) return 2;
-    return 3;  // Default case for "basse" or other values
+        return 1;
+    if (strstr(description, "moyenne")  ||strstr(description, "Moyenne")||strstr(description, "Relatif")||strstr(description, "relatif")
+    ||strstr(description, "Normal")||strstr(description, "Normal")||strstr(description, "Intermédiaire")||strstr(description, "intermédiaire"))
+         return 2;
+    return 3;                                                                                                               //
 }
 void trierReclamationsParPriorite() {
-    int i, j;
+    int i, j;                                                                                                               //
     struct reclamation temp;
-
+                                                                                                                            //
     for (i = 0; i < reclamation_count - 1; i++) {
         for (j = 0; j < reclamation_count - i - 1; j++) {
-            if (prioriteIndex(reclamation_data[j].categorie) > prioriteIndex(reclamation_data[j + 1].categorie)) {
+            if (prioriteIndex(reclamation_data[j].description) > prioriteIndex(reclamation_data[j + 1].description)) {      //
                 // Swap reclamations based on priority
                 temp = reclamation_data[j];
                 reclamation_data[j] = reclamation_data[j + 1];
-                reclamation_data[j + 1] = temp;
+                reclamation_data[j + 1] = temp;                                                                             //
             }
-        }
+        }                                                                                                                   //
     }
     printf("Reclamations triees par priorite avec succes.\n");
-}
+}                                                                                                                           //
 void afficherReclamationsTriees() {
     trierReclamationsParPriorite();
-
+                                                                                                                            //
     printf("==================== Liste des Reclamations Triees ====================\n");
     for (int i = 0; i < reclamation_count; i++) {
-        printf("ID: %d\n", reclamation_data[i].id);
+        printf("ID: %d\n", reclamation_data[i].id);                                                                          //
         printf("Nom d'utilisateur: %s\n", reclamation_data[i]. usernam);
         printf("Motif: %s\n", reclamation_data[i].motif);
         printf("Description: %s\n", reclamation_data[i].description);
-        printf("Categorie: %s\n", reclamation_data[i].categorie);
+        printf("Categorie: %s\n", reclamation_data[i].categorie);                                                            //
         printf("Statut: %s\n", reclamation_data[i].status);
-        printf("Date: %s\n", reclamation_data[i].date);
-        printf("--------------------------------------------------------------------\n");
+        printf("Date: %s\n", reclamation_data[i].date);                                                                      //
+        printf("--------------------------------------------------------------------\n");                                    //
     }
-}
-//==============================================================================================================
+}                                                                                                                            //
+//============================================================================================================================
 
 //===========================================Fonction Statistiques_Rapports======================================
 
@@ -656,4 +780,3 @@ int main() {
 
     return 0;
 }
-
