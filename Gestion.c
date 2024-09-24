@@ -82,21 +82,27 @@ bool verifierMotDePasse(char motDePasse[], char nomUtilisateur[]) {             
 //=========================== Fonction create account ============================
 void create_account() {                                                          //
     struct client new_client;
-                                                                                 //
-    printf("    Entrez vos informations :)   \n");
-    printf("Telephone: ");                                                       //
+    printf("=======================================================\n");                                                                             //
+    printf("|~~~~~~~~~~~~Entrez vos informations ~~~~~~~~~~~~~:)  |\n");
+    printf("=======================================================\n");
+    printf("Telephone==> ");                                                       //
     scanf(" %[^\n]", new_client.tele);
-    printf("Entrez votre nom d'utilisateur : ");                                 //
+    printf("Entrez votre nom d'utilisateur==> ");                                 //
     scanf(" %[^\n]", new_client.nomUtilisateur);
-    printf("Entrez votre mot de passe : ");                                      //
+    printf("Entrez votre mot de passe==> ");                                      //
     scanf(" %[^\n]", new_client.motDePasse);
+    printf("=======================================================\n");
         //  verifierMotDePasse Fonction pour vérifier  mot de passe 54           //
     if (verifierMotDePasse(new_client.motDePasse, new_client.nomUtilisateur)) {
         clients_data[totalaccounts] = new_client;                                //
         totalaccounts++;
-        printf("   ~Inscription reussie~     \n");                               //
+        printf("=============================\n");                              //
+        printf("|  ~Inscription reussie~    |\n");
+        printf("=============================\n");                              //
     } else {
-        printf("Erreur : Le mot de passe ne respecte pas les contraintes.\n");   //
+        printf("==========================================================\n");  //
+        printf("|Erreur : Le mot de passe ne respecte pas les contraintes|\n");
+        printf("==========================================================\n");  //
     }
 }                                                                                //
 //=================================================================================
@@ -107,11 +113,14 @@ void Se_connecter() {                                                           
     isAdmin = 0;
     int attempts = 0;
 
-    while (attempts < 3) {                                                                                                          //
-        printf("Entrez votre nom d'utilisateur : ");                                                                                //
+    while (attempts < 3) {
+        printf("=================================\n");
+        printf("Entrez votre nom d'utilisateur : ");
         scanf(" %[^\n]", name);
         printf("Entrez votre mot de passe : ");
-        scanf(" %[^\n]", password);                                                                                                 //
+        scanf(" %[^\n]", password);
+        printf("=================================\n");
+
                                                                                                                                     //
         if (strcmp(name, admin_username) == 0 && strcmp(password, admin_password) == 0) {
             printf("Connexion reussie en tant qu'administrateur.\n");
@@ -133,12 +142,12 @@ void Se_connecter() {                                                           
         }
                                                                                                                                     //
         attempts++;                                                                                                                 //
-        printf("Erreur : nom d'utilisateur ou mot de passe incorrect. Tentatives restantes : %d\n", 3 - attempts);
+        printf("Erreur : nom d'utilisateur ou mot de passe incorrect * Tentatives restantes [%d]\n", 3 - attempts);
 
         if (attempts == 3) {                                                                                                        //
             printf("Trop de tentatives echouees. Veuillez patienter 1 minute avant de reessayer.\n");                               //
             Sleep(60000);
-            printf("Vous pouvez maintenant réessayer.\n");
+            printf("Vous pouvez maintenant reessayer.\n");
             attempts = 0;                                                                                                           //
         }                                                                                                                           //
     }
@@ -181,7 +190,7 @@ void Menu_dutilisateur() {                                                      
 //=================Fonction Ajouter une reclamation ===============================
 void add_reclamation() {
     if (reclamation_count >= MAX_USERS) {                                        //
-        printf("Erreur : Limite maximale de réclamations atteinte.\n");
+        printf("Erreur : Limite maximale de reclamations atteinte.\n");
         return;                                                                  //
     }
                                                                                  //
@@ -191,11 +200,11 @@ void add_reclamation() {
 afficher_date_actuelle(new_reclamation.date);// Fonction pour obtenir la date actuelle
     printf("nom et prenom : ");
     scanf(" %[^\n]", new_reclamation.usernam);                                   //
-    printf("Entrez le motif de la reclamation : ");
+    printf("Entrez le motif de la reclamation  produit defectueux, service client, facturation: ");
     scanf(" %[^\n]", new_reclamation.motif);
     printf("Entrez une description detaillee du probleme: ");                    //
     scanf(" %[^\n]", new_reclamation.description);
-    printf("Entrez la categorie de la reclamation: ");                           //
+    printf("Entrez la categorie de la reclamation  produit , service , facturation: ");
     scanf(" %[^\n]", new_reclamation.categorie);
                                                                                  //
     reclamation_data[reclamation_count++] = new_reclamation;
@@ -251,6 +260,7 @@ void modifier_de_reclamation() {
             double hours = seconds / 3600;                                                                                                          //
 
             if (hours < 24) {
+                printf("=======================================================\n");
                 printf("Reclamation trouvee. Entrez les nouvelles informations:\n");                                                                //
                 printf("Entrez le nouveau motif de la reclamation : ");
                 scanf(" %[^\n]", reclamation_data[i].motif);
@@ -261,7 +271,9 @@ void modifier_de_reclamation() {
                                                                                                                                                     //
                 printf(" ~Reclamation modifiee avec succes~\n");
             } else {
+                printf("==============================================================================================\n");
                 printf("Erreur : Vous ne pouvez pas modifier cette reclamation car plus de 24 heures se sont ecoulees.\n");
+                printf("==============================================================================================\n");
             }                                                                                                                                       //
             break;
         }
@@ -289,13 +301,16 @@ void Supprimerlareclamationutilisateur() {                                      
                 reclamation_data[j] = reclamation_data[j + 1];
             }                                                                                //
             reclamation_count--;
+
             printf("Reclamation avec ID %d supprimee avec succes.\n", ID);
             break;                                                                           //
         }
     }
 
-    if (!found) {                                                                            //
+    if (!found) {
+        printf("============================================================================\n");
         printf("Erreur : ID %d non trouvee ou vous n'etes pas l'auteur de cette reclamation.\n", ID);
+        printf("============================================================================\n");
     }
 }                                                                                            //
 //=============================================================================================
@@ -313,15 +328,15 @@ void my_reclamations() {                                                        
      for (int i = 0; i < reclamation_count; i++) {                              //
         if (reclamation_data[i].id == ID ) {
             hasReclamations = true;
-            printf("======================================\n");
-            printf("Nom d'utilisateur: %s\n", reclamation_data[i].usernam);     //
-            printf("ID de reclamation : %d\n", reclamation_data[i].id);
-            printf("Motif : %s\n", reclamation_data[i].motif);
-            printf("Description : %s\n", reclamation_data[i].description);
-            printf("Categorie : %s\n", reclamation_data[i].categorie);          //
-            printf("Statut : %s\n", reclamation_data[i].status);
-            printf("Date : %s\n", reclamation_data[i].date);
-            printf("======================================\n");                 //
+            printf("================================\n");
+            printf("|  nom et prenom     |   %s    |\n", reclamation_data[i].usernam);     //
+            printf("| ID de reclamation  |   %d    |\n", reclamation_data[i].id);
+            printf("|      Motif         |   %s    |\n", reclamation_data[i].motif);
+            printf("|   Description      |   %s    |\n", reclamation_data[i].description);
+            printf("|    Categorie       |   %s    |\n", reclamation_data[i].categorie);          //
+            printf("|      Statut        |   %s    |\n", reclamation_data[i].status);
+            printf("|       Date         |   %s    |\n", reclamation_data[i].date);
+            printf("================================\n");                 //
         }
     }                                                                           //
 
@@ -333,9 +348,9 @@ void my_reclamations() {                                                        
 void Rechercher_reclamations() {
     int choix;
     printf("Choisissez un critere de recherche :\n");
-    printf("1. Rechercher par nom d'utilisateur\n");
+    printf("1. Rechercher par nom et prenom\n");
     printf("2. Rechercher par date\n");
-    printf("3. Rechercher par description\n");
+    printf("3. Rechercher par categorie\n");
     printf("4. Rechercher par statut\n");
     printf("0. Quitter la recherche\n");
     printf("Veuillez entrer votre choix ici ==> ");
@@ -355,7 +370,7 @@ void Rechercher_reclamations() {
                 }
             }
             if (!found) {
-                printf("Aucune reclamation trouvée pour l'utilisateur %s.\n", nomUtilisateur);
+                printf("Aucune reclamation trouvee pour l'utilisateur %s.\n", nomUtilisateur);
             }
             break;
         }
@@ -372,24 +387,24 @@ void Rechercher_reclamations() {
                 }
             }
             if (!found) {
-                printf("Aucune réclamation trouvée pour la date %s.\n", dateRecherche);
+                printf("Aucune reclamation trouvee pour la date %s.\n", dateRecherche);
             }
             break;
         }
         case 3: {
-            char descriptionRecherche[200];
-            printf("Entrez un mot clé de description : ");
-            scanf(" %[^\n]", descriptionRecherche);
-            printf("Résultats de la recherche par description '%s' :\n", descriptionRecherche);
+            char categorieRecherche[200];
+            printf("Entrez un mot cle de categorie ex produit , service , facturation: : ");
+            scanf(" %[^\n]", categorieRecherche);
+            printf("Resultats de la recherche par categorie '%s' :\n", categorieRecherche);
             bool found = false;
             for (int i = 0; i < reclamation_count; i++) {
-                if (strstr(reclamation_data[i].description, descriptionRecherche) != NULL) {
+                if (strstr(reclamation_data[i].categorie, categorieRecherche) != NULL) {
                     found = true;
                     afficher_detail_reclamation(reclamation_data[i]);
                 }
             }
             if (!found) {
-                printf("Aucune réclamation trouvée avec la description contenant '%s'.\n", descriptionRecherche);
+                printf("Aucune reclamation trouvee avec la categorie contenant '%s'.\n", categorieRecherche);
             }
             break;
         }
@@ -397,7 +412,7 @@ void Rechercher_reclamations() {
             char statutRecherche[50];
             printf("Entrez le statut (ex: en cours, resolue, rejetee) : ");
             scanf(" %[^\n]", statutRecherche);
-            printf("Résultats de la recherche par statut '%s' :\n", statutRecherche);
+            printf("Resultats de la recherche par statut '%s' :\n", statutRecherche);
             bool found = false;
             for (int i = 0; i < reclamation_count; i++) {
                 if (strcmp(reclamation_data[i].status, statutRecherche) == 0) {
@@ -406,7 +421,7 @@ void Rechercher_reclamations() {
                 }
             }
             if (!found) {
-                printf("Aucune réclamation trouvée avec le statut '%s'.\n", statutRecherche);
+                printf("Aucune reclamation trouvee avec le statut '%s'.\n", statutRecherche);
             }
             break;
         }
@@ -414,7 +429,7 @@ void Rechercher_reclamations() {
             printf("Retour au menu principal.\n");
             break;
         default:
-            printf("Choix invalide, veuillez réessayer.\n");
+            printf("Choix invalide, veuillez reessayer.\n");
             break;
     }
 }
@@ -422,13 +437,13 @@ void Rechercher_reclamations() {
 // Fonction d'affichage des détails d'une réclamation
 void afficher_detail_reclamation(struct reclamation reclam) {
     printf("======================================\n");
-    printf("  nom et prenom  : %s\n", reclam.usernam);
-    printf("ID de réclamation: %d\n", reclam.id);
-    printf("Motif: %s\n", reclam.motif);
-    printf("Description: %s\n", reclam.description);
-    printf("Catégorie: %s\n", reclam.categorie);
-    printf("Statut: %s\n", reclam.status);
-    printf("Date: %s\n", reclam.date);
+    printf("|   nom et prenom      |   %s      |\n", reclam.usernam);
+    printf("|  ID de reclamation   |   %d      |\n", reclam.id);
+    printf("|        Motif         |   %s      |\n", reclam.motif);
+    printf("|     Description      |   %s      |\n", reclam.description);
+    printf("|      Categorie       |   %s      |\n", reclam.categorie);
+    printf("|        Statut        |   %s      |\n", reclam.status);
+    printf("|         Date         |   %s      |\n", reclam.date);
     printf("======================================\n");
 }
 //=======================================================================================================================
@@ -459,14 +474,18 @@ void menu_admin() {
         printf("             8.Statistiques et Rapports            \n");
         printf("            9.Rechercher les reclamations          \n");
         printf("                  0. Quitter                       \n");
+        printf("===================================================\n");
         printf("Veuillez entrer votre choix ici ==> ");
         scanf("%d", &adminchoice);                                                                                                      //
 
         switch (adminchoice) {
             case 1:                                                                                                                     //
-                printf("Total des comptes : %d\n", totalaccounts);
+                    printf("=============Total des comptes %d ====\n", totalaccounts);
                 for (int i = 0; i < totalaccounts; i++) {
-                    printf("Nom d'utilisateur : %s | Telephone : %s\n", clients_data[i].nomUtilisateur, clients_data[i].tele);          //
+                    printf("======================================\n");
+                    printf("|  Nom d'utilisateur  | %s          | \n", clients_data[i].nomUtilisateur);
+                    printf("|    Telephone        | %s          | \n", clients_data[i].tele);
+                    printf("======================================\n");
                 }
                 break;
                                                                                                                                         //
@@ -511,8 +530,9 @@ void menu_admin() {
 
 //====================== Fonction pour supprimer un compte utilisateur=============
 int supprimer_comte(struct client clients_data[], int totalaccounts) {           //
-    char nameuser[100];                                                          //
-    printf("Entrez le nom d'utilisateur du compte a supprimer : ");              //
+    char nameuser[100];
+    printf("===================================================\n");             //
+    printf("Entrez le nom d'utilisateur du compte a supprimer==> ");             //
     scanf(" %[^\n]", nameuser);                                                  //
                                                                                  //
     for (int i = 0; i < totalaccounts; i++) {                                    //
@@ -520,12 +540,16 @@ int supprimer_comte(struct client clients_data[], int totalaccounts) {          
             for (int j = i; j < totalaccounts - 1; j++) {                        //
                 clients_data[j] = clients_data[j + 1];                           //
             }                                                                    //
-            totalaccounts--;                                                     //
-            printf("Compte supprime avec succes !\n");                           //
+            totalaccounts--;
+            printf("============================\n");                            //
+            printf("Compte supprime avec succes \n");
+            printf("============================\n");
             return totalaccounts;                                                //
         }                                                                        //
-    }                                                                            //
-    printf("Compte non trouve !\n");                                             //
+    }
+    printf("**********************\n");                                          //
+    printf("* Compte non trouve  *\n");
+    printf("**********************\n");                                          //
     return totalaccounts;                                                        //
 }                                                                                //
 //=================================================================================
@@ -541,8 +565,8 @@ void list_les_reclamations() {                                                  
         printf("    Description   : %s               \n", reclamation_data[i].description);
         printf("     Categorie    : %s               \n", reclamation_data[i].categorie);
         printf("      Statut      : %s               \n", reclamation_data[i].status);   //
-        printf("       Date       : %s\n             \n", reclamation_data[i].date);
-        printf("======================================\n");                              //
+        printf("       Date       : %s               \n", reclamation_data[i].date);
+        printf("=====================================\n");                              //
     }
 }                                                                                        //
 //=========================================================================================
@@ -551,8 +575,8 @@ void list_les_reclamations() {                                                  
 void reclamationstatus() {                                                               //
     int ID;
     bool found = false;                                                                  //
-
-    printf("Entrez l'ID de la reclamation a modifier : ");
+    printf("=========================================\n");
+    printf("Entrez l'ID de la reclamation a modifier =>");
     scanf("%d", &ID);                                                                    //
 
     for (int i = 0; i < reclamation_count; i++) {                                        //
@@ -560,15 +584,20 @@ void reclamationstatus() {                                                      
             found = true;                                                                //
             char new_status[50];
             printf("Reclamation trouvee. Statut actuel : %s\n", reclamation_data[i].status);
-            printf("Entrez le nouveau statut : ");                                       //
+            printf("-------------------------\n");
+            printf("Entrez le nouveau statut en cours, resolue, rejetee: ");                                       //
             scanf(" %[^\n]", new_status);
-            strcpy(reclamation_data[i].status, new_status);                              //
-            printf("Statut modifie avec succes.\n");
+            strcpy(reclamation_data[i].status, new_status);
+            printf("+--------------------------+\n");                                    //
+            printf("+Statut modifie avec succes+\n");
+            printf("+--------------------------+\n");
             break;                                                                       //
         }
     }                                                                                    //
     if (!found) {
-        printf("Erreur : ID %d non trouvee.\n", ID);                                     //
+        printf("+------+---------------------\n");
+        printf("+Erreur+ : ID %d non trouvee.\n", ID);
+        printf("+------+---------------------\n");
     }
 }                                                                                        //
 //=========================================================================================
@@ -576,8 +605,9 @@ void reclamationstatus() {                                                      
 //=======================Fonction Supprimer la réclamation=================================
 void Supprimer_la_reclamation() {                                                        //
     int ID;
-    bool found = false;                                                                  //
-    printf("Entrez l'ID de la reclamation a supprimer : ");
+    bool found = false;
+    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");                               //
+    printf("Entrez l'ID de la reclamation a supprimer=> ");
     scanf("%d", &ID);                                                                    //
 
     for (int i = 0; i < reclamation_count; i++) {                                        //
@@ -587,12 +617,14 @@ void Supprimer_la_reclamation() {                                               
                 reclamation_data[j] = reclamation_data[j + 1];                           //
             }
             reclamation_count--;                                                         //
-            printf("Reclamation avec ID %d supprimee avec succes.\n", ID);
+            printf("Reclamation avec ID:%d supprimee avec succes.\n", ID);
             break;                                                                       //
         }
     }                                                                                    //
     if (!found) {
-        printf("Erreur : ID %d non trouvee.\n", ID);                                     //
+       printf("+------+---------------------\n");
+       printf("+Erreur+ : ID %d non trouvee.\n", ID);
+       printf("+------+---------------------\n");                                   //
     }
 }                                                                                        //
 //=========================================================================================
@@ -600,6 +632,7 @@ void Supprimer_la_reclamation() {                                               
 //=========================Fonction Changer le role de l'utilisateur =====================
 void Changer_le_role_de_lutilisateur() {                                                //
     char nomUtilisateur[50];
+    printf("========================================================\n");
     printf("Entrez le nom d'utilisateur du compte a changer de role : ");               //
     scanf("%s", nomUtilisateur);
 
@@ -612,8 +645,9 @@ menu_admin();                                                                   
                 return;
         }                                                                               //
     }
-
-    printf("Utilisateur non trouve.\n");                                                //
+    printf("-------------------------\n");
+    printf("|Utilisateur non trouve.|\n");
+    printf("-------------------------\n");                                              //
 }
                                                                                         //
 //========================================================================================
@@ -694,14 +728,15 @@ void afficherReclamationsTriees() {
                                                                                                                             //
     printf("==================== Liste des Reclamations Triees ====================\n");
     for (int i = 0; i < reclamation_count; i++) {
-        printf("ID: %d\n", reclamation_data[i].id);                                                                          //
-        printf("Nom d'utilisateur: %s\n", reclamation_data[i]. usernam);
-        printf("Motif: %s\n", reclamation_data[i].motif);
-        printf("Description: %s\n", reclamation_data[i].description);
-        printf("Categorie: %s\n", reclamation_data[i].categorie);                                                            //
-        printf("Statut: %s\n", reclamation_data[i].status);
-        printf("Date: %s\n", reclamation_data[i].date);                                                                      //
-        printf("--------------------------------------------------------------------\n");                                    //
+        printf("---------------------------------\n");
+        printf("|      ID          |   %d       |\n", reclamation_data[i].id);                                              //
+        printf("| Nom d'utilisateur|   %s       |\n", reclamation_data[i]. usernam);
+        printf("|      Motif       |   %s       |\n", reclamation_data[i].motif);
+        printf("|   Description    |   %s       |\n", reclamation_data[i].description);
+        printf("|    Categorie     |   %s       |\n", reclamation_data[i].categorie);                                        //
+        printf("|     Statut       |   %s       |\n", reclamation_data[i].status);
+        printf("|      Date        |   %s       |\n", reclamation_data[i].date);                                             //
+        printf("---------------------------------\n");                                                                       //
     }
 }                                                                                                                            //
 //============================================================================================================================
@@ -745,12 +780,15 @@ void Statistiques_Rapports() {
 int main() {
     int choix;
     do {
-        printf("======================================================\n");
-        printf("Bienvenue dans le systeme de gestion des reclamations.\n");
-        printf("                       Menu                           \n");
-        printf("                1. Creer un compte                    \n");
-        printf("                 2. Se connecter                      \n");
-        printf("                  0. Quitter                          \n");
+        printf("=======================================================\n");
+        printf("|Bienvenue dans le systeme de gestion des reclamations|\n");
+        printf("=======================================================\n");
+        printf("|       ~~~~~~~~~~~~~~ Menu ~~~~~~~~~~~~~~            |\n");
+        printf("=======================================================\n");
+        printf("|               1. Creer un compte                    |\n");
+        printf("|                2. Se connecter                      |\n");
+        printf("|                 0. Quitter                          |\n");
+        printf("=======================================================\n");
         printf("Veuillez entrer votre choix ici ==> ");
         scanf("%d", &choix);
 
