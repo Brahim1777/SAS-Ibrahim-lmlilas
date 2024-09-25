@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <time.h>
 
+
 #define MAX_USERS 100
 
 //======admin pasword/name=============
@@ -442,15 +443,15 @@ void Rechercher_reclamations() {                                                
 
 // Fonction d'affichage des détails d'une réclamation
 void afficher_detail_reclamation(struct reclamation reclam) {
-    printf("======================================\n");
-    printf("|   nom et prenom      |   %s        |\n", reclam.usernam);
-    printf("|  ID de reclamation   |   %d        |\n", reclam.id);                                                     //
-    printf("|        Motif         |   %s        |\n", reclam.motif);
-    printf("|     Description      |   %s        |\n", reclam.description);
-    printf("|      Categorie       |   %s        |\n", reclam.categorie);
-    printf("|        Statut        |   %s        |\n", reclam.status);                                                  //
-    printf("|         Date         |   %s        |\n", reclam.date);
-    printf("======================================\n");
+    printf("=====================================\n");
+    printf("|   nom et prenom      |   %s        \n", reclam.usernam);
+    printf("|  ID de reclamation   |   %d        \n", reclam.id);                                                     //
+    printf("|        Motif         |   %s        \n", reclam.motif);
+    printf("|     Description      |   %s        \n", reclam.description);
+    printf("|      Categorie       |   %s        \n", reclam.categorie);
+    printf("|        Statut        |   %s        \n", reclam.status);                                                  //
+    printf("|         Date         |   %s        \n", reclam.date);
+    printf("=====================================\n");
 }
 //=======================================================================================================================
 
@@ -744,13 +745,13 @@ void afficherReclamationsTriees() {
     printf("==================== Liste des Reclamations Triees ====================\n");
     for (int i = 0; i < reclamation_count; i++) {
         printf("---------------------------------\n");
-        printf("|      ID          |   %d       |\n", reclamation_data[i].id);                                              //
-        printf("| Nom d'utilisateur|   %s       |\n", reclamation_data[i]. usernam);
-        printf("|      Motif       |   %s       |\n", reclamation_data[i].motif);
-        printf("|   Description    |   %s       |\n", reclamation_data[i].description);
-        printf("|    Categorie     |   %s       |\n", reclamation_data[i].categorie);                                        //
-        printf("|     Statut       |   %s       |\n", reclamation_data[i].status);
-        printf("|      Date        |   %s       |\n", reclamation_data[i].date);                                             //
+        printf("|      ID          |   %d        \n", reclamation_data[i].id);                                              //
+        printf("| Nom d'utilisateur|   %s        \n", reclamation_data[i]. usernam);
+        printf("|      Motif       |   %s        \n", reclamation_data[i].motif);
+        printf("|   Description    |   %s        \n", reclamation_data[i].description);
+        printf("|    Categorie     |   %s        \n", reclamation_data[i].categorie);                                        //
+        printf("|     Statut       |   %s        \n", reclamation_data[i].status);
+        printf("|      Date        |   %s        \n", reclamation_data[i].date);                                             //
         printf("---------------------------------\n");                                                                       //
     }
 }
@@ -782,15 +783,15 @@ void Statistiques_Rapports() {
 
     // Print the statistics
     printf("\n===== Statistiques & Rapports ====\n");
-    printf("Total des reclamations |     %d    |\n", totalReclamations);
+    printf("Total des reclamations |     %d     \n", totalReclamations);
     printf("------------------------------------\n");
-    printf("Total des utilisateurs |     %d    |\n", totalUsers);
+    printf("Total des utilisateurs |     %d     \n", totalUsers);
     printf("------------------------------------\n");
-    printf("Reclamations resolues  |     %d    |\n", resolvedCount);
+    printf("Reclamations resolues  |     %d     \n", resolvedCount);
     printf("------------------------------------\n");
-    printf("Reclamations en cours  |     %d    |\n", inProgressCount);
+    printf("Reclamations en cours  |     %d     \n", inProgressCount);
     printf("------------------------------------\n");
-    printf("Reclamations rejetees  |     %d    |\n", rejectedCount);
+    printf("Reclamations rejetees  |     %d     \n", rejectedCount);
     printf("====================================\n");
 
 
@@ -809,24 +810,28 @@ void Generer_rapport(){                                                         
     }                                                                                                              //
 
         fprintf(fichier, "============= Rapport des Reclamations ===========\n");
-        fprintf(fichier, "| Nombre total de reclamations   |      %d       |\n", reclamation_count);               //
+        fprintf(fichier, "| Nombre total de reclamations   |      %d        \n", reclamation_count);               //
         fprintf(fichier, "+--------------------------------+---------------+\n");
 
     for (int i = 0; i < reclamation_count; i++) {
-        fprintf(fichier, "|               ID               |      %d       |\n", reclamation_data[i].id);          //
+        fprintf(fichier, "|               ID               |      %d        \n", reclamation_data[i].id);          //
         fprintf(fichier, "---------------------------------+----------------\n");
-        fprintf(fichier, "|         Nom d'utilisateur      |      %s       |\n", reclamation_data[i].usernam);     //
+        fprintf(fichier, "|         Nom d'utilisateur      |      %s        \n", reclamation_data[i].usernam);     //
         fprintf(fichier, "---------------------------------+----------------\n");
-        fprintf(fichier, "|              Motif             |      %s       |\n", reclamation_data[i].motif);
+        fprintf(fichier, "|              Motif             |      %s        \n", reclamation_data[i].motif);
         fprintf(fichier, "---------------------------------+----------------\n");
-        fprintf(fichier, "|           Description          |      %s       |\n", reclamation_data[i].description); //
+        fprintf(fichier, "|           Description          |      %s        \n", reclamation_data[i].description); //
         fprintf(fichier, "---------------------------------+----------------\n");
-        fprintf(fichier, "|            Categorie           |      %s       |\n", reclamation_data[i].categorie);
+        fprintf(fichier, "|            Categorie           |      %s        \n", reclamation_data[i].categorie);
         fprintf(fichier, "---------------------------------+----------------\n");
-        fprintf(fichier, "|              Statut            |      %s       |\n", reclamation_data[i].status);
+        fprintf(fichier, "|              Statut            |      %s        \n", reclamation_data[i].status);
         fprintf(fichier, "---------------------------------+----------------\n");
-        fprintf(fichier, "|               Date             |      %s       |\n", reclamation_data[i].date);        //
+        fprintf(fichier, "|               Date             |      %s        \n", reclamation_data[i].date);        //
         fprintf(fichier, "--------------------------------------------------\n");
+        fprintf(fichier, "==================================================\n");
+        fprintf(fichier, "==================================================\n");
+
+
     }
     int totalReclamations = reclamation_count;
     int totalUsers = totalaccounts;
@@ -844,15 +849,15 @@ void Generer_rapport(){                                                         
     }
             // Print the statistics
             fprintf(fichier,"\n===== Statistiques & Rapports ====\n");
-            fprintf(fichier,"Total des reclamations |     %d    |\n", totalReclamations);
+            fprintf(fichier,"Total des reclamations |     %d     \n", totalReclamations);
             fprintf(fichier,"------------------------------------\n");
-            fprintf(fichier,"Total des utilisateurs |     %d    |\n", totalUsers);
+            fprintf(fichier,"Total des utilisateurs |     %d     \n", totalUsers);
             fprintf(fichier,"------------------------------------\n");
-            fprintf(fichier,"Reclamations resolues  |     %d    |\n", resolvedCount);
+            fprintf(fichier,"Reclamations resolues  |     %d     \n", resolvedCount);
             fprintf(fichier,"------------------------------------\n");
-            fprintf(fichier,"Reclamations en cours  |     %d    |\n", inProgressCount);
+            fprintf(fichier,"Reclamations en cours  |     %d     \n", inProgressCount);
             fprintf(fichier,"------------------------------------\n");
-            fprintf(fichier,"Reclamations rejetees  |     %d    |\n", rejectedCount);
+            fprintf(fichier,"Reclamations rejetees  |     %d     \n", rejectedCount);
             fprintf(fichier,"====================================\n");
 
     fclose(fichier);
